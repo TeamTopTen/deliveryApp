@@ -11,13 +11,16 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.delivery.common.config.encode.PasswordEncoder;
+import org.example.delivery.common.exception.ErrorCode;
+import org.example.delivery.common.exception.base.AuthException;
 import org.example.delivery.user.model.UserRole;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "user")
 @Entity
-public class User extends BaseEntity{
+public class User extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,13 +44,23 @@ public class User extends BaseEntity{
   @Column(name = "user_role", nullable = false)
   @Enumerated(EnumType.STRING)
   private UserRole userRole;
-
   private boolean isDeleted = Boolean.FALSE; // 삭제 여부 기본값 false 설정
 
-  public void updateUser(String name, String password, String address) { //TODO passwordEncoder 추가 후 변경 예정
+  public User(String email, String password, String name, Integer phoneNumber, String address,
+      PasswordEncoder passwordEncoder) {
+    this.email = email;
+    this.password = passwordEncoder.encode(password);
     this.name = name;
-    this.password = password;
+    this.phoneNumber = phoneNumber;
     this.address = address;
+  }
+
+  // 비밀번호 검증 메서드
+  public boolean matches(String password, PasswordEncoder passwordEncoder) {
+    if (!passwordEncoder.matches(password, this.password)) {
+      throw new AuthException(ErrorCode.AUTHENTICATION_FAILED);
+    }
+    return false;
   }
 
   public void deleteUser() {

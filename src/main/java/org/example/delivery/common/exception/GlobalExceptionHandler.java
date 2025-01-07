@@ -19,7 +19,8 @@ public class GlobalExceptionHandler {
 
   //지원하지 않은 HTTP 메서드를 호출 할 경우 발생 (컨트롤러에서 정의되지 않은 Http 메서드 일 때)
   @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-  protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSuppoertedException(HttpRequestMethodNotSupportedException e) {
+  protected ResponseEntity<ErrorResponse> handleHttpRequestMethodNotSuppoertedException(
+      HttpRequestMethodNotSupportedException e) {
     log.error("HttpRequestMethodNotSupportedException", e);
     return createErrorResponseEntity(ErrorCode.METHOD_NOT_AllOWED);
   }

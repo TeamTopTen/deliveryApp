@@ -1,5 +1,5 @@
 package org.example.delivery.menu.controller;
 
-public class MenuContoller {
+public class MenuController {
 
 }

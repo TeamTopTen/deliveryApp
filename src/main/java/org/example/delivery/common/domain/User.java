@@ -1,6 +1,7 @@
 package org.example.delivery.common.domain;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +16,7 @@ import org.example.delivery.user.model.UserRole;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "user")
+@Entity
 public class User extends BaseEntity{
 
   @Id

@@ -1,5 +1,8 @@
 package org.example.delivery.user.repository;
 
-public class UserRepository {
+import org.example.delivery.common.domain.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, Long> {
 
 }

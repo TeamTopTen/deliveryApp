@@ -2,8 +2,8 @@ package org.example.delivery.store.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.delivery.store.model.request.StoreRequest;
-import org.example.delivery.store.model.response.StoreResponse;
+import org.example.delivery.store.model.dto.request.StoreRequest;
+import org.example.delivery.store.model.dto.response.StoreResponse;
 import org.example.delivery.store.service.StoreService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

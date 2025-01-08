@@ -1,4 +1,4 @@
-package org.example.delivery.store.model.request;
+package org.example.delivery.store.model.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

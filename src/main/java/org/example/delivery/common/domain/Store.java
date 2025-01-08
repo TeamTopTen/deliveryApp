@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 import java.sql.Time;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.example.delivery.store.model.request.StoreRequest;
+import org.example.delivery.store.model.dto.request.StoreRequest;
 
 @Entity
 @Getter

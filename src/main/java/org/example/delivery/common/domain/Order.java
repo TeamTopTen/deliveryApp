@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table
+@Table(name = "`order`")
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,13 +19,13 @@ public class Order extends BaseEntity {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-  @ManyToOne
-  @JoinColumn(name = "store_id", nullable = false)
-  private Store store;
-
-  @ManyToOne
-  @JoinColumn(name = "menu_id", nullable = false)
-  private Menu menu;
+//  @ManyToOne
+//  @JoinColumn(name = "store_id", nullable = false)
+//  private Store store;
+//
+//  @ManyToOne
+//  @JoinColumn(name = "menu_id", nullable = false)
+//  private Menu menu;
 
   @Column(nullable = false)
   @Enumerated(EnumType.STRING)

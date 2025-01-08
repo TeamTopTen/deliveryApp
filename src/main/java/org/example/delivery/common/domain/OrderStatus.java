@@ -14,9 +14,9 @@ public enum OrderStatus {
   CANCELLED,       // 주문 취소됨
   FAILED;           // 주문 실패
 
-  public static OrderStatus of(String role) {
+  public static OrderStatus of(String orderStatus) {
     return Arrays.stream(OrderStatus.values())
-        .filter(r -> r.name().equalsIgnoreCase(role))
+        .filter(r -> r.name().equalsIgnoreCase(orderStatus))
         .findFirst()
         .orElseThrow(() -> new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
   }

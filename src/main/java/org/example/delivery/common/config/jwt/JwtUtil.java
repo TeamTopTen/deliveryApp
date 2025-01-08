@@ -5,14 +5,17 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.example.delivery.auth.model.UserRole;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+@Slf4j
 @Component
 public class JwtUtil {
   private static final String BEARER_PREFIX = "Bearer ";
@@ -43,10 +46,13 @@ public class JwtUtil {
             .compact();
   }
 
-  public String substringToken(String tokenValue) {
-    if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
-      return tokenValue.substring(7);
+  public String substringToken(HttpServletRequest request) {
+    String bearerToken = request.getHeader("Authorization");
+    if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+      log.info("=== if 문 시작 ===");
+      return bearerToken.substring(7);
     }
+    log.info("=== if 문 바깥 ===" + bearerToken);
     throw new RuntimeException("토큰을 찾을 수 없습니다."); //TODO 토큰 예외 처리 만들기
   }
 

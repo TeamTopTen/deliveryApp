@@ -41,6 +41,7 @@ public enum ErrorCode {
 
 
   //Store
+  STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "NF01", "존재하지 않는 매장입니다"),
 
 
   ;

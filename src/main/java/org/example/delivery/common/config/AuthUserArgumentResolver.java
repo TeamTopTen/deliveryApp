@@ -21,7 +21,7 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
     boolean isAuthUserType = parameter.getParameterType().equals(AuthUser.class);
 
     if (hasAuthAnnotation != isAuthUserType) {
-      throw new AuthException(ErrorCode.AUTHENTICATION_FAILED); //TODO JWT Exception - Authentication 예외 만들기
+      throw new AuthException(ErrorCode.AUTHENTICATION_FAILED);
     }
 
     return hasAuthAnnotation;
@@ -36,7 +36,7 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
   ) {
     HttpServletRequest request = (HttpServletRequest) webRequest.getNativeRequest();
 
-    Long userId = (Long) request.getAttribute("userId");
+    Long userId = (Long) request.getAttribute("id");
     String email = (String) request.getAttribute("email");
     UserRole userRole = UserRole.of((String) request.getAttribute("userRole"));
 

@@ -62,6 +62,7 @@ public class Store extends BaseEntity{
     this.minOrderPrice = minOrderPrice;
     this.openingTime = openingTime;
     this.closingTime = closingTime;
+    this.isDeleted = false;
   }
 
   public static Store makeWith(User user, StoreRequest request){
@@ -69,7 +70,7 @@ public class Store extends BaseEntity{
         request.registrationNumber(), request.minOrderPrice(), request.openingTime(), request.closingTime());
   }
 
-  public Store updateWith(StoreRequest request){
+  public void updateWith(StoreRequest request){
     this.name = request.name();
     this.storeNumber = request.storeNumber();
     this.storeAddress = request.storeAddress();
@@ -77,6 +78,5 @@ public class Store extends BaseEntity{
     this.minOrderPrice = request.minOrderPrice();
     this.openingTime = request.openingTime();
     this.closingTime = request.closingTime();
-    return this;
   }
 }

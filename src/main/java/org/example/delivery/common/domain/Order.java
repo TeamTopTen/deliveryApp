@@ -1,4 +1,4 @@
-package org.example.delivery.common.entity;
+package org.example.delivery.common.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -31,6 +31,12 @@ public class Order extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private OrderStatus orderStatus;
 
+
+  public Order(OrderStatus orderStatus) {
+    this.orderStatus = orderStatus;
+  }
+
+  // 나중에 삭제
   public Order(User user, Store store, Menu menu, OrderStatus orderStatus) {
     this.user = user;
     this.store = store;
@@ -42,3 +48,4 @@ public class Order extends BaseEntity {
     this.orderStatus = orderStatus;
   }
 }
+

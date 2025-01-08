@@ -1,4 +1,4 @@
-package org.example.delivery.common.entity;
+package org.example.delivery.common.domain;
 
 public enum OrderStatus {
   ORDERED,         // 주문 생성됨

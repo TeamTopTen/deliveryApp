@@ -1,7 +1,7 @@
 package org.example.delivery.order.repository;
 
 import java.util.Optional;
-import org.example.delivery.common.entity.Order;
+import org.example.delivery.common.domain.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

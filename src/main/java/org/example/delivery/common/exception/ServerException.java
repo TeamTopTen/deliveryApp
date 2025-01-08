@@ -1,8 +1,0 @@
-package org.example.delivery.common.exception;
-
-public class ServerException extends RuntimeException {
-
-    public ServerException(String message) {
-        super(message);
-    }
-}

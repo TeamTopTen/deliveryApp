@@ -1,19 +1,10 @@
 package org.example.delivery.order.model.dto;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.example.delivery.common.entity.Menu;
 import org.example.delivery.common.entity.Order;
-import org.example.delivery.common.entity.OrderStatus;
 import org.example.delivery.common.entity.Store;
 import org.example.delivery.common.entity.User;
 

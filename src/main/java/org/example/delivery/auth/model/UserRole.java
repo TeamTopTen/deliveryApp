@@ -1,4 +1,4 @@
-package org.example.delivery.user.model;
+package org.example.delivery.auth.model;
 
 import java.util.Arrays;
 import lombok.Getter;

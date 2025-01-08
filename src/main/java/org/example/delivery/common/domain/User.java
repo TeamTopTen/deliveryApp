@@ -36,7 +36,7 @@ public class User extends BaseEntity {
   private String name;
 
   @Column(name = "phone_number", nullable = false)
-  private Integer phoneNumber;
+  private String phoneNumber;
 
   @Column(name = "address", nullable = false)
   private String address;
@@ -46,7 +46,7 @@ public class User extends BaseEntity {
   private UserRole userRole;
   private boolean isDeleted = Boolean.FALSE; // 삭제 여부 기본값 false 설정
 
-  public User(String email, String password, String name, Integer phoneNumber, String address,
+  public User(String email, String password, String name, String phoneNumber, String address,
       UserRole userRole) {
     this.email = email;
     this.password = password;
@@ -54,14 +54,6 @@ public class User extends BaseEntity {
     this.phoneNumber = phoneNumber;
     this.address = address;
     this.userRole = userRole;
-  }
-
-  // 비밀번호 검증 메서드
-  public boolean matches(String password, PasswordEncoder passwordEncoder) {
-    if (!passwordEncoder.matches(password, this.password)) {
-      throw new AuthException(ErrorCode.AUTHENTICATION_FAILED);
-    }
-    return false;
   }
 
   public void deleteUser() {

@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
 
   private final UserRepository userRepository;
+  private final StoreRepository storeRepository;
   private final OrderRepository orderRepository;
 
   @Transactional
@@ -51,9 +52,12 @@ public class OrderService {
     User user = userRepository.findById(userId).orElseThrow(() ->
         new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
 
+    Store store = storeRepository.findById(storeId).orElseThrow(() ->
+        new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
 
     OrderStatus orderStatus = OrderStatus.of("ORDERED");
-    Order order = new Order(user, orderStatus);
+    Order order = new Order(user, store, orderStatus);
+    System.out.println(order.getStore());
     orderRepository.save(order);
   }
 
@@ -66,9 +70,11 @@ public class OrderService {
 
     Long userId =  authUser.id(); // 주문한 사람
     String userRole =  authUser.userRole().getUserRole();
+    System.out.println(userId);
+    System.out.println(userRole);
 
     if (userRole.equals("owner")){
-      throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+      return orderRepository.findOrdersByStoreUserId(userId, pageable);
     }
 
     return orderRepository.findOrdersByUserId(userId, pageable);

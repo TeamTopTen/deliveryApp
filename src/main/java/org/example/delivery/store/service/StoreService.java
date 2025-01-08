@@ -10,7 +10,7 @@ import org.example.delivery.common.exception.base.NotFoundException;
 import org.example.delivery.store.model.dto.request.StoreRequest;
 import org.example.delivery.store.model.dto.response.StoreResponse;
 import org.example.delivery.store.repository.StoreRepository;
-import org.example.delivery.user.repository.UserRepository;
+import org.example.delivery.auth.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service

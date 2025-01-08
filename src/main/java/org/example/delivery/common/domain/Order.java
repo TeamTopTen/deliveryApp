@@ -19,10 +19,10 @@ public class Order extends BaseEntity {
   @JoinColumn(name = "user_id", nullable = false)
   private User user;
 
-//  @ManyToOne
-//  @JoinColumn(name = "store_id", nullable = false)
-//  private Store store;
-//
+  @ManyToOne
+  @JoinColumn(name = "store_id", nullable = false)
+  private Store store;
+
 //  @ManyToOne
 //  @JoinColumn(name = "menu_id", nullable = false)
 //  private Menu menu;
@@ -32,8 +32,9 @@ public class Order extends BaseEntity {
   private OrderStatus orderStatus;
 
 
-  public Order(User user, OrderStatus orderStatus) {
+  public Order(User user, Store store, OrderStatus orderStatus) {
     this.user = user;
+    this.store = store;
     this.orderStatus = orderStatus;
   }
 

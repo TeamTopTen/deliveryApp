@@ -18,8 +18,26 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
       "o.id, o.orderStatus, " +
       "o.createdAt, o.updatedAt) " +
       "FROM Order o " +
+      "WHERE (o.user.id = :userId) " +
       "ORDER BY o.updatedAt DESC")
   Page<OrderPageDto> findOrdersByUserId(@Param("userId") Long userId, Pageable pageable);
+
+  @Query("SELECT new org.example.delivery.order.model.dto.OrderPageDto(" +
+      "o.id, o.orderStatus, " +
+      "o.createdAt, o.updatedAt) " +
+      "FROM Order o " +
+      "WHERE o.store.user.id = :userId " + // Store를 통해 User의 id를 조회
+      "ORDER BY o.updatedAt DESC")
+  Page<OrderPageDto> findOrdersByStoreUserId(@Param("userId") Long userId, Pageable pageable);
+
+
+  Optional<Order> findOrderByUserId(Long userId);
+
+  default Order findOrderByUserIdOrElseThrow(Long userId) {
+    return findOrderByUserId(userId)
+        .orElseThrow(() ->
+            new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
+  }
 
 
   Optional<Order> findOrderById(Long orderId);
@@ -28,5 +46,13 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     return findOrderById(orderId)
         .orElseThrow(() ->
         new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
+  }
+
+  Optional<Order> findOrderByStoreId(Long storeId);
+
+  default Order findOrderByStoreIdOrElseThrow(Long storeId) {
+    return findOrderByStoreId(storeId)
+        .orElseThrow(() ->
+            new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
   }
 }

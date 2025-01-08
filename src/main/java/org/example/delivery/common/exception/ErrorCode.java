@@ -20,10 +20,10 @@ public enum ErrorCode {
   METHOD_NOT_AllOWED(HttpStatus.METHOD_NOT_ALLOWED,"B405","잘못된 HTTP 메서드를 호출했습니다."),
   CONFLICT(HttpStatus.CONFLICT, "B409", "이미 존재하는 엔티티입니다."),
   INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR,"B500","서버에 에러가 발생했습니다."),
-  // VALIDATE(HttpStatus.BAD_REQUEST, "B400", "무슨 에러야?????") TODO 해당 에러의 사용처가 어딘지, invaild request 에러와 같다면 합치기
 
   //User
   AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "U401", "이메일 혹은 비밀번호가 일치하지 않습니다."),
+  USER_INVALID_ROLE(HttpStatus.BAD_REQUEST, "U404","ddd"),
   USER_ACCESS_DENIED(HttpStatus.FORBIDDEN,"U403", "접근 권한이 없습니다."),
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, "U404", "존재하지 않는 유저입니다"),
   USER_CONFLICT(HttpStatus.CONFLICT, "U409", "이미 존재하는 유저입니다."),

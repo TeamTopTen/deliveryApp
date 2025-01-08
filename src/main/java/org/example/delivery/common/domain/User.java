@@ -47,12 +47,13 @@ public class User extends BaseEntity {
   private boolean isDeleted = Boolean.FALSE; // 삭제 여부 기본값 false 설정
 
   public User(String email, String password, String name, Integer phoneNumber, String address,
-      PasswordEncoder passwordEncoder) {
+      UserRole userRole) {
     this.email = email;
-    this.password = passwordEncoder.encode(password);
+    this.password = password;
     this.name = name;
     this.phoneNumber = phoneNumber;
     this.address = address;
+    this.userRole = userRole;
   }
 
   // 비밀번호 검증 메서드

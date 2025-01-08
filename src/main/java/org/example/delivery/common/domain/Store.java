@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 import java.sql.Time;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.example.delivery.store.model.request.StoreCreateRequest;
+import org.example.delivery.store.model.request.StoreRequest;
 
 @Entity
 @Getter
@@ -40,6 +40,9 @@ public class Store extends BaseEntity{
   @Column(name = "registration_number", nullable = false)
   private String registrationNumber;
 
+  @Column(name = "min_order_price", nullable = false)
+  private Integer minOrderPrice;
+
   @Column(name = "opening_time", nullable = false)
   private Time openingTime;
 
@@ -50,18 +53,30 @@ public class Store extends BaseEntity{
   private boolean isDeleted;
 
   public Store(User user, String name, String storeNumber, String storeAddress, String registrationNumber,
-      Time openingTime, Time closingTime) {
+      Integer minOrderPrice,Time openingTime, Time closingTime) {
     this.user = user;
     this.name = name;
     this.storeNumber = storeNumber;
     this.storeAddress = storeAddress;
     this.registrationNumber = registrationNumber;
+    this.minOrderPrice = minOrderPrice;
     this.openingTime = openingTime;
     this.closingTime = closingTime;
   }
 
-  public static Store registerStore(User user, StoreCreateRequest request){
+  public static Store makeWith(User user, StoreRequest request){
     return new Store(user, request.name(), request.storeNumber(), request.storeAddress(),
-        request.registrationNumber(), request.openingTime(), request.closingTime());
+        request.registrationNumber(), request.minOrderPrice(), request.openingTime(), request.closingTime());
+  }
+
+  public Store updateWith(StoreRequest request){
+    this.name = request.name();
+    this.storeNumber = request.storeNumber();
+    this.storeAddress = request.storeAddress();
+    this.registrationNumber = request.registrationNumber();
+    this.minOrderPrice = request.minOrderPrice();
+    this.openingTime = request.openingTime();
+    this.closingTime = request.closingTime();
+    return this;
   }
 }

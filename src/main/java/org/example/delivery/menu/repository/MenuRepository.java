@@ -1,7 +1,6 @@
 package org.example.delivery.menu.repository;
 
 import java.util.List;
-import java.util.Optional;
 import org.example.delivery.common.domain.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.HttpStatus;
@@ -9,11 +8,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 public interface MenuRepository extends JpaRepository<Menu, Long> {
 
-  Optional<Menu> findById();
 
   List<Menu> findByStore_IdAndIsDeleted(Long storeId, Boolean isDeleted
   );
-  default List<Menu> findByStore_Id
 
   default Menu findByIdOrElseThrow(Long id) {
     return findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND));

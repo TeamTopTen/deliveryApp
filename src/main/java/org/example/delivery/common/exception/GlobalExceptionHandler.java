@@ -42,12 +42,12 @@ public class GlobalExceptionHandler {
     return createErrorResponseEntity(e.getErrorCode());
   }
 
-  @ExceptionHandler(Exception.class)
-  protected ResponseEntity<ErrorResponse> handle(Exception e) {
-    e.printStackTrace();
-    log.error("Exception", e);
-    return createErrorResponseEntity(ErrorCode.INTERNAL_SERVER_ERROR);
-  }
+//  @ExceptionHandler(Exception.class)
+//  protected ResponseEntity<ErrorResponse> handle(Exception e) {
+//    e.printStackTrace();
+//    log.error("Exception", e);
+//    return createErrorResponseEntity(ErrorCode.INTERNAL_SERVER_ERROR);
+//  }
 
   private ResponseEntity<ErrorResponse> createErrorResponseEntity(ErrorCode errorCode) {
     return new ResponseEntity<>(

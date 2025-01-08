@@ -2,6 +2,8 @@ package org.example.delivery.store.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.delivery.auth.Annotation.Auth;
+import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.store.model.dto.request.StoreRequest;
 import org.example.delivery.store.model.dto.response.GetStoreResponse;
 import org.example.delivery.store.model.dto.response.StoreResponse;
@@ -27,9 +29,11 @@ public class StoreController {
 
 
   @PostMapping("/owners")
-  public ResponseEntity<StoreResponse> createStore(@RequestBody StoreRequest request) {
+  public ResponseEntity<StoreResponse> createStore(
+      @Auth AuthUser authUser,
+      @RequestBody StoreRequest request) {
 
-    StoreResponse response = storeService.createStore(request);
+    StoreResponse response = storeService.createStore(authUser, request);
 
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
@@ -43,7 +47,7 @@ public class StoreController {
   }
 
 
-  @PutMapping("{store_id}/owner")
+  @PutMapping("{store_id}/owners")
   public ResponseEntity<StoreResponse> updateStore(
       @PathVariable(name = "store_id") Long storeId, @RequestBody StoreRequest request) {
 
@@ -53,7 +57,7 @@ public class StoreController {
   }
 
 
-  @PatchMapping("/{store_id}/owner")
+  @PatchMapping("/{store_id}/owners")
   public ResponseEntity<Void> deleteStore(@PathVariable(name = "store_id") Long storeId) {
     storeService.deleteStore(storeId);
 

@@ -46,4 +46,13 @@ public class StoreService {
 
     return new StoreResponse("수정이 정상적으로 완료되었습니다.");
   }
+
+
+  public void deleteStore(Long storeId) {
+    Store foundstore = storeRepository.findById(storeId)
+        .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
+
+    foundstore.softDelete();
+    storeRepository.save(foundstore);
+  }
 }

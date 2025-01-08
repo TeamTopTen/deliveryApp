@@ -79,4 +79,8 @@ public class Store extends BaseEntity{
     this.openingTime = request.openingTime();
     this.closingTime = request.closingTime();
   }
+
+  public void softDelete () {
+    this.isDeleted = true;
+  }
 }

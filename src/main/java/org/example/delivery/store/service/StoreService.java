@@ -7,7 +7,7 @@ import org.example.delivery.common.domain.Store;
 import org.example.delivery.common.domain.User;
 import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.NotFoundException;
-import org.example.delivery.store.model.request.StoreCreateRequest;
+import org.example.delivery.store.model.request.StoreRequest;
 import org.example.delivery.store.model.response.StoreResponse;
 import org.example.delivery.store.repository.StoreRepository;
 import org.example.delivery.user.repository.UserRepository;
@@ -22,15 +22,26 @@ public class StoreService {
   private UserRepository userRepository;
   private final HttpSession session;
 
-  public StoreResponse createStore(StoreCreateRequest request) {
+  public StoreResponse createStore(StoreRequest request) {
 
-    Long userId = (Long) session.getAttribute("logined_user");
+    Long userId = (Long) session.getAttribute("logged_user");
     User foundUser = userRepository.findById(userId)
         .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-    Store store = Store.registerStore(foundUser, request);
+    Store store = Store.makeWith(foundUser, request);
     storeRepository.save(store);
 
     return new StoreResponse("가게가 정상적으로 등록 완료되었습니다.");
+  }
+
+
+  public StoreResponse updateStore(Long storeId, StoreRequest request) {
+
+    Store foundStore = storeRepository.findById(storeId)
+        .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
+
+    storeRepository.save(foundStore.updateWith(request));
+
+    return new StoreResponse("수정이 정상적으로 완료되었습니다.");
   }
 }

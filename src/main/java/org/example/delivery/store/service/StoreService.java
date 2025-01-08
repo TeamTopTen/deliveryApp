@@ -1,16 +1,20 @@
 package org.example.delivery.store.service;
 
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.delivery.auth.repository.UserRepository;
+import org.example.delivery.common.domain.Menu;
 import org.example.delivery.common.domain.Store;
 import org.example.delivery.common.domain.User;
 import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.NotFoundException;
 import org.example.delivery.store.model.dto.request.StoreRequest;
+import org.example.delivery.store.model.dto.response.GetStoreResponse;
 import org.example.delivery.store.model.dto.response.StoreResponse;
 import org.example.delivery.store.repository.StoreRepository;
-import org.example.delivery.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,6 +36,15 @@ public class StoreService {
     storeRepository.save(store);
 
     return new StoreResponse("가게가 정상적으로 등록 완료되었습니다.");
+  }
+
+  public GetStoreResponse getStore(Long storeId) {
+    Store foundStore = storeRepository.findById(storeId).
+        orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
+
+    List<Menu> menus = new ArrayList<>(); // 이후 메뉴 리포지토리 확인 후 코드 수정 예정.
+
+    return GetStoreResponse.with(foundStore, menus);
   }
 
 

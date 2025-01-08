@@ -3,6 +3,7 @@ package org.example.delivery.store.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.delivery.store.model.dto.request.StoreRequest;
+import org.example.delivery.store.model.dto.response.GetStoreResponse;
 import org.example.delivery.store.model.dto.response.StoreResponse;
 import org.example.delivery.store.service.StoreService;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ public class StoreController {
 
   private final StoreService storeService;
 
+
   @PostMapping("/owners")
   public ResponseEntity<StoreResponse> createStore(@RequestBody StoreRequest request) {
 
@@ -31,6 +33,15 @@ public class StoreController {
 
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
+
+
+  @GetMapping("/{store_id}/users")
+  public ResponseEntity<GetStoreResponse> getStore(@PathVariable long store_id) {
+    GetStoreResponse response = storeService.getStore(store_id);
+
+    return new ResponseEntity<>(response, HttpStatus.OK);
+  }
+
 
   @PutMapping("{store_id}/owner")
   public ResponseEntity<StoreResponse> updateStore(
@@ -40,6 +51,7 @@ public class StoreController {
 
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
+
 
   @PatchMapping("/{store_id}/owner")
   public ResponseEntity<Void> deleteStore(@PathVariable(name = "store_id") Long storeId) {

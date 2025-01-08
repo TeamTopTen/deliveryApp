@@ -3,6 +3,7 @@ package org.example.delivery.common.exception;
 import java.rmi.ServerException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.example.delivery.common.exception.base.AccessDeniedException;
 import org.example.delivery.common.exception.base.BusinessException;

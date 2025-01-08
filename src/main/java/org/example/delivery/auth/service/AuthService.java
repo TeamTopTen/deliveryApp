@@ -1,20 +1,20 @@
-package org.example.delivery.user.service;
+package org.example.delivery.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.delivery.common.config.encode.PasswordEncoder;
 import org.example.delivery.common.domain.User;
 import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.ConflictException;
-import org.example.delivery.user.model.UserRole;
-import org.example.delivery.user.model.request.RegisterRequest;
-import org.example.delivery.user.model.response.RegisterResponse;
-import org.example.delivery.user.repository.UserRepository;
+import org.example.delivery.auth.model.UserRole;
+import org.example.delivery.auth.model.request.RegisterRequest;
+import org.example.delivery.auth.model.response.RegisterResponse;
+import org.example.delivery.auth.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class AuthService {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;

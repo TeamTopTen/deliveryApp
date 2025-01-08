@@ -1,21 +1,23 @@
-package org.example.delivery.user.controller;
+package org.example.delivery.auth.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.delivery.user.model.request.RegisterRequest;
-import org.example.delivery.user.model.response.RegisterResponse;
-import org.example.delivery.user.service.UserService;
+import org.example.delivery.auth.model.request.RegisterRequest;
+import org.example.delivery.auth.model.response.RegisterResponse;
+import org.example.delivery.auth.service.AuthService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-public class UserController {
+@RequestMapping("/auth")
+public class AuthController {
 
-  private final UserService userService;
+  private final AuthService userService;
 
   @PostMapping("/register")
   public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request) {

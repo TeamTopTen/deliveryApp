@@ -5,7 +5,7 @@ import java.util.List;
 import org.example.delivery.common.domain.Menu;
 import org.example.delivery.common.domain.Store;
 
-public record GetStoreResponse(
+public record GetStoreByIdResponse(
 
     String name,
     String storeNumber,
@@ -16,10 +16,10 @@ public record GetStoreResponse(
     List<Menu> menus
 ) {
 
-  public static GetStoreResponse with(
+  public static GetStoreByIdResponse with(
       Store store, List<Menu> menus) {
 
-    return new GetStoreResponse(store.getName(), store.getStoreNumber(), store.getStoreAddress(),
+    return new GetStoreByIdResponse(store.getName(), store.getStoreNumber(), store.getStoreAddress(),
         store.getMinOrderPrice(), store.getOpeningTime(), store.getClosingTime(), menus
     );
   }

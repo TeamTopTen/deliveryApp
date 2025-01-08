@@ -43,20 +43,9 @@ public class MenuContoller {
   }
 
   @GetMapping("/users/stores/{store_id}")
-  public ResponseEntity<List<MenuResponse>> createMenu(@PathVariable Long storeId,
-      @RequestHeader("Authorization") String authorization) {
+  public ResponseEntity<List<MenuResponse>> findMenu(@PathVariable Long storeId) {
 
-//    String token = authorization.substring(7);
-//
-//    claims claims = jwtTokenProvider.validateProvider(token);
-//
-//    String email = claims.getSubject();
-//
-//    request.getEmail() ==
-
-    menuService.findMenu(storeId,email);
-
-    return ResponseEntity.ok().body(menuService.findMenu(storeId,email));
+    return ResponseEntity.ok().body(menuService.findMenu(storeId));
   }
 
 }

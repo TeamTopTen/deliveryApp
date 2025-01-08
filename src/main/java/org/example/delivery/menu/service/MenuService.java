@@ -2,10 +2,13 @@ package org.example.delivery.menu.service;
 
 
 import jakarta.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.delivery.common.domain.Menu;
 import org.example.delivery.common.domain.User;
 import org.example.delivery.menu.model.request.MenuRequest;
+import org.example.delivery.menu.model.response.MenuResponse;
 import org.example.delivery.menu.repository.MenuRepository;
 import org.example.delivery.store.ProxyStore;
 import org.example.delivery.store.ProxyStoreRepository;
@@ -27,9 +30,7 @@ public class MenuService {
 
     User needCheckUser = userRepository.findByEmailOrElesThrow(request.getEmail());
 
-    if(!(needCheckUser.getEmail().equals(email))) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-    }
+    crossCheck(email, needCheckUser);
 
     ProxyStore proxyStore = proxyStoreRepository.findById(request.getStoreId())
         .orElseThrow(() -> new ResponseStatusException(
@@ -39,7 +40,20 @@ public class MenuService {
     Menu.storeCheck(needCheckUser,proxyStore);
     Menu menu = Menu.menuCreate(request.getName(), request.getPrice(), needCheckUser, proxyStore);
     menuRepository.save(menu);
+  }
 
+  private void crossCheck(String email, User needCheckUser) {
+    if(!(needCheckUser.getEmail().equals(email))) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+  }
+
+  @Transactional
+  public List<MenuResponse> findMenu(Long storeId) {
+
+    List<Menu> byStoreId = menuRepository.findByStore_Id(storeId);
+
+    return MenuResponse.createMenuResponseList(byStoreId);
   }
 
 }

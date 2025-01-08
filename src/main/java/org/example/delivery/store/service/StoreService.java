@@ -1,5 +1,6 @@
 package org.example.delivery.store.service;
 
+import java.lang.module.InvalidModuleDescriptorException;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,10 @@ public class StoreService {
   private UserRepository userRepository;
 
   public StoreResponse createStore(AuthUser authUser, StoreRequest request) {
+
+    if (storeRepository.countStoreByUserId(authUser.id()) >= 3){
+      throw new InvalidModuleDescriptorException(ErrorCode.TOO_MANY_STORES.getCode());
+    }
 
     User foundUser = userRepository.findById(authUser.id())
         .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));

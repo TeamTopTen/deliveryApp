@@ -23,7 +23,7 @@ public enum ErrorCode {
 
   //User
   AUTHENTICATION_FAILED(HttpStatus.UNAUTHORIZED, "U401", "이메일 혹은 비밀번호가 일치하지 않습니다."),
-  USER_INVALID_ROLE(HttpStatus.BAD_REQUEST, "U404","ddd"),
+  USER_INVALID_ROLE(HttpStatus.BAD_REQUEST, "U404","유효하지 않은 권한입니다. USER 또는 OWNER만 선택 가능합니다."),
   USER_ACCESS_DENIED(HttpStatus.FORBIDDEN,"U403", "접근 권한이 없습니다."),
   USER_NOT_FOUND(HttpStatus.NOT_FOUND, "U404", "존재하지 않는 유저입니다"),
   USER_CONFLICT(HttpStatus.CONFLICT, "U409", "이미 존재하는 유저입니다."),

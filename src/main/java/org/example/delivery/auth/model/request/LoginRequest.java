@@ -1,4 +1,4 @@
-package org.example.delivery.user.model.request;
+package org.example.delivery.auth.model.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

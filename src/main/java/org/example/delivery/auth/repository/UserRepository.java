@@ -1,4 +1,4 @@
-package org.example.delivery.user.repository;
+package org.example.delivery.auth.repository;
 
 import org.example.delivery.common.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;

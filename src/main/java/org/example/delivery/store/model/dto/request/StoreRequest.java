@@ -11,7 +11,7 @@ public record StoreRequest(
     String name,
 
     @Pattern(
-        regexp = "^(01[0-9])-(\\d{3,4})-(\\d{4})$",
+        regexp = "^(01[0-9])(\\d{3,4})(\\d{4})$",
         message = "올바른 전화번호 양식이 필요합니다."
     )
     String storeNumber,

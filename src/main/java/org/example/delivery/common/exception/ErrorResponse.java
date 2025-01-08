@@ -19,7 +19,16 @@ public class ErrorResponse {
     this.message = errorCode.getMessage();
   }
 
+  public ErrorResponse(final ErrorCode errorCode, final String message) {
+    this.message = message;
+    this.code = errorCode.getCode();
+  }
+
   public static ErrorResponse of(final ErrorCode errorCode) {
     return new ErrorResponse(errorCode);
+  }
+
+  public static ErrorResponse of(final ErrorCode errorCode, final String message) {
+    return new ErrorResponse(errorCode, message);
   }
 }

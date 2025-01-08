@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.delivery.auth.repository.UserRepository;
 import org.example.delivery.common.domain.Menu;
+import org.example.delivery.common.domain.Store;
 import org.example.delivery.common.domain.User;
 import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.AccessDeniedException;
@@ -14,8 +15,7 @@ import org.example.delivery.common.exception.base.NotFoundException;
 import org.example.delivery.menu.model.request.MenuRequest;
 import org.example.delivery.menu.model.response.MenuResponse;
 import org.example.delivery.menu.repository.MenuRepository;
-import org.example.delivery.store.proxy.ProxyStore;
-import org.example.delivery.store.proxy.ProxyStoreRepository;
+import org.example.delivery.store.repository.StoreRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,7 +27,7 @@ public class MenuService {
 
   private final MenuRepository menuRepository;
   private final UserRepository userRepository;
-  private final ProxyStoreRepository proxyStoreRepository;
+  private final StoreRepository storeRepository;
 
   @Transactional
   public void createMenu(MenuRequest request, String email) {
@@ -35,15 +35,15 @@ public class MenuService {
     User needCheckUser = userRepository.findUsersByEmail(email)
         .orElseThrow(() -> new NotFoundException(ErrorCode.MENU_NOT_FOUND));
     log.info("user_email :{}",needCheckUser.getEmail());
-    ProxyStore proxyStore = proxyStoreRepository.findById(request.getStoreId())
+    Store store = storeRepository.findById(request.getStoreId())
         .orElseThrow(() -> new NotFoundException(ErrorCode.MENU_NOT_FOUND));
-    log.info("proxyStore_Id :{}",proxyStore.getId());
+    log.info("store_Id :{}",store.getId());
 
     Menu.ownerCheck(needCheckUser);
-    Menu.storeCheck(needCheckUser,proxyStore);
+    Menu.storeCheck(needCheckUser,store);
     log.info("user_email_2 :{}",needCheckUser.getEmail());
-    log.info("proxyStore_Id_2 :{}",proxyStore.getId());
-    Menu menu = Menu.menuCreate(request.getName(), request.getPrice(), proxyStore , needCheckUser );
+    log.info("store_Id_2 :{}",store.getId());
+    Menu menu = Menu.menuCreate(request.getName(), request.getPrice(), store , needCheckUser );
     log.info("Menu_name :{}",menu.getName());
     menuRepository.save(menu);
   }

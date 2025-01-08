@@ -39,6 +39,3 @@ out/
 ### Properties ###
 *.properties
 *.yml
-
-### proxy ###
-/src/main/java/org/example/delivery/store/proxy/

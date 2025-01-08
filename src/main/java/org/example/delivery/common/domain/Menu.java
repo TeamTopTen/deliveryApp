@@ -10,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import org.example.delivery.store.proxy.ProxyStore;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,18 +31,18 @@ public class Menu extends BaseEntity {
 
   @ManyToOne
   @JoinColumn(name = "store_id")
-  private ProxyStore store;
+  private Store store;
 
   private Boolean isDeleted = Boolean.FALSE;
 
-  private Menu(String name, Integer price, ProxyStore store, User user) {
+  private Menu(String name, Integer price, Store store, User user) {
     this.name = name;
     this.price = price;
     this.store = store;
     this.user = user;
   }
 
-  public Menu(Long id, String name, Integer price, ProxyStore store,User user) {
+  public Menu(Long id, String name, Integer price, Store store,User user) {
     this.id = id;
     this.name = name;
     this.price = price;
@@ -55,11 +54,11 @@ public class Menu extends BaseEntity {
 
   }
 
-  public static Menu menuCreate(String name,Integer price,ProxyStore store,User user) {
+  public static Menu menuCreate(String name,Integer price,Store store,User user) {
     return new Menu(name,price,store,user);
   }
 
-  public static Menu menuPut(Long id,String name,Integer price,ProxyStore store,User user) {
+  public static Menu menuPut(Long id,String name,Integer price,Store store,User user) {
     return new Menu(id,name,price,store,user);
   }
 
@@ -69,7 +68,7 @@ public class Menu extends BaseEntity {
     }
   }
 
-  public static void storeCheck(User user, ProxyStore store) { // 2
+  public static void storeCheck(User user, Store store) { // 2
     if(!(store.getUser() == user || user.isDeleted())) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"권한이 없습니다.");
     }

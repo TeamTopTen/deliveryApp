@@ -34,11 +34,8 @@ public class StoreController {
   @PostMapping("/owners")
   public ResponseEntity<StoreResponse> createStore(
       @Auth AuthUser authUser,
-      @RequestHeader("Authorization") String authorization,
       @RequestBody StoreRequest request) {
-    log.info("authUser_email :{}",authUser.email());
-    log.info("authUser_id :{}",authUser.id());
-    log.info("authorization :{}",authorization);
+
     StoreResponse response = storeService.createStore(authUser, request);
 
     return new ResponseEntity<>(response, HttpStatus.CREATED);

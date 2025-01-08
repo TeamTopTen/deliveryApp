@@ -38,14 +38,14 @@ public class MenuController {
     if(!authUser.email().equals(request.getEmail())) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
-    log.info("request_email :{}",request.getEmail());
+
     menuService.createMenu(request, authUser.email());
     return ResponseEntity.ok().body("메뉴가 정상적으로 생성되었습니다.");
   }
 
   @GetMapping("/users/stores/{store_id}")
   public ResponseEntity<List<MenuResponse>> findMenu(@PathVariable("store_id") Long storeId) {
-    log.info("1");
+
     return ResponseEntity.ok().body(menuService.findMenu(storeId));
   }
 

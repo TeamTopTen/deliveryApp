@@ -34,25 +34,23 @@ public class MenuService {
 
     User needCheckUser = userRepository.findUsersByEmail(email)
         .orElseThrow(() -> new NotFoundException(ErrorCode.MENU_NOT_FOUND));
-    log.info("user_email :{}",needCheckUser.getEmail());
+
     Store store = storeRepository.findById(request.getStoreId())
         .orElseThrow(() -> new NotFoundException(ErrorCode.MENU_NOT_FOUND));
-    log.info("store_Id :{}",store.getId());
 
     Menu.ownerCheck(needCheckUser);
     Menu.storeCheck(needCheckUser,store);
-    log.info("user_email_2 :{}",needCheckUser.getEmail());
-    log.info("store_Id_2 :{}",store.getId());
+
     Menu menu = Menu.menuCreate(request.getName(), request.getPrice(), store , needCheckUser );
-    log.info("Menu_name :{}",menu.getName());
+
     menuRepository.save(menu);
   }
 
   @Transactional
   public List<MenuResponse> findMenu(Long storeId) {
-    log.info("2");
+
     List<Menu> findMenuList = menuRepository.findByStore_IdAndIsDeleted(storeId,false);
-    log.info("3");
+
     return MenuResponse.createMenuResponseList(findMenuList);
   }
 

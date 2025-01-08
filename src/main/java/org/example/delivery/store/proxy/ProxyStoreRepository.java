@@ -1,7 +1,5 @@
-package org.example.delivery.store;
+package org.example.delivery.store.proxy;
 
-import java.util.List;
-import org.example.delivery.common.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProxyStoreRepository extends JpaRepository<ProxyStore, Long> {

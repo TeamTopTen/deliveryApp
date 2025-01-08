@@ -28,11 +28,12 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class MenuController {
 
-  private MenuService menuService;
+  private final MenuService menuService;
 
   @PostMapping("/owners")
   public ResponseEntity<String> createMenu(@Valid @RequestBody MenuRequest request,
       @Auth AuthUser authUser) {
+
 
     if(!authUser.email().equals(request.getEmail())) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);

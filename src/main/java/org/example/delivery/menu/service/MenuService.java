@@ -3,7 +3,6 @@ package org.example.delivery.menu.service;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.example.delivery.auth.repository.UserRepository;
 import org.example.delivery.common.domain.Menu;
@@ -11,8 +10,8 @@ import org.example.delivery.common.domain.User;
 import org.example.delivery.menu.model.request.MenuRequest;
 import org.example.delivery.menu.model.response.MenuResponse;
 import org.example.delivery.menu.repository.MenuRepository;
-import org.example.delivery.store.ProxyStore;
-import org.example.delivery.store.ProxyStoreRepository;
+import org.example.delivery.store.proxy.ProxyStore;
+import org.example.delivery.store.proxy.ProxyStoreRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,9 +20,9 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class MenuService {
 
-  private MenuRepository menuRepository;
-  private UserRepository userRepository;
-  private ProxyStoreRepository proxyStoreRepository;
+  private final MenuRepository menuRepository;
+  private final UserRepository userRepository;
+  private final ProxyStoreRepository proxyStoreRepository;
 
   @Transactional
   public void createMenu(MenuRequest request, String email) {

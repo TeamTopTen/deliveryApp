@@ -1,4 +1,4 @@
-package org.example.delivery.store;
+package org.example.delivery.store.proxy;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

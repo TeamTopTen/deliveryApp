@@ -10,7 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import org.example.delivery.store.ProxyStore;
+import org.example.delivery.store.proxy.ProxyStore;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 

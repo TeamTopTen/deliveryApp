@@ -6,6 +6,7 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
@@ -21,6 +22,11 @@ import org.example.delivery.auth.model.UserRole;
 public class JwtFilter implements Filter {
 
   private final JwtUtil jwtUtil;
+
+  @Override
+  public void init(FilterConfig filterConfig) throws ServletException {
+    Filter.super.init(filterConfig);
+  }
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response,
@@ -42,7 +48,7 @@ public class JwtFilter implements Filter {
       return;
     }
 
-    String jwt = jwtUtil.substringToken(bearerJwt); //BEARER 접두사 제거
+    String jwt = jwtUtil.substringToken(((HttpServletRequest) request)); //BEARER 접두사 제거
 
     try {
       Claims claims = jwtUtil.extractClaims(jwt);

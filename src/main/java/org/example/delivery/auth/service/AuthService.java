@@ -1,14 +1,19 @@
 package org.example.delivery.auth.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.delivery.auth.model.request.LoginRequest;
+import org.example.delivery.auth.model.response.LoginResponse;
 import org.example.delivery.common.config.encode.PasswordEncoder;
+import org.example.delivery.common.config.jwt.JwtUtil;
 import org.example.delivery.common.domain.User;
 import org.example.delivery.common.exception.ErrorCode;
+import org.example.delivery.common.exception.base.AuthException;
 import org.example.delivery.common.exception.base.ConflictException;
 import org.example.delivery.auth.model.UserRole;
 import org.example.delivery.auth.model.request.RegisterRequest;
 import org.example.delivery.auth.model.response.RegisterResponse;
 import org.example.delivery.auth.repository.UserRepository;
+import org.example.delivery.common.exception.base.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +23,7 @@ public class AuthService {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private final JwtUtil jwtUtil;
 
   //회원 생성
   @Transactional
@@ -46,6 +52,18 @@ public class AuthService {
   }
 
   // 로그인
+  public LoginResponse authenticate(LoginRequest request) {
+    User user = userRepository.findUsersByEmail(request.email())
+        .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+    if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+      throw new AuthException(ErrorCode.AUTHENTICATION_FAILED);
+    }
+
+    String bearerToken = jwtUtil.createToken(user.getId(), user.getName(), user.getUserRole());
+
+    return new LoginResponse(bearerToken);
+  }
 
   // 로그아웃
 

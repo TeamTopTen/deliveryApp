@@ -2,7 +2,6 @@ package org.example.delivery.menu.service;
 
 
 import jakarta.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.delivery.common.domain.Menu;
@@ -30,7 +29,7 @@ public class MenuService {
 
     User needCheckUser = userRepository.findByEmailOrElesThrow(request.getEmail());
 
-    crossCheck(email, needCheckUser);
+    crossCheckEmail(email, needCheckUser);
 
     ProxyStore proxyStore = proxyStoreRepository.findById(request.getStoreId())
         .orElseThrow(() -> new ResponseStatusException(
@@ -42,18 +41,36 @@ public class MenuService {
     menuRepository.save(menu);
   }
 
-  private void crossCheck(String email, User needCheckUser) {
-    if(!(needCheckUser.getEmail().equals(email))) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-    }
-  }
-
   @Transactional
   public List<MenuResponse> findMenu(Long storeId) {
 
     List<Menu> byStoreId = menuRepository.findByStore_Id(storeId);
 
     return MenuResponse.createMenuResponseList(byStoreId);
+  }
+
+  @Transactional
+  public MenuResponse putMenu(Long id,MenuRequest request,String email) {
+
+    Menu checkMenu = menuRepository.findByIdOrElseThrow(id);
+    crossCheckUser(email, checkMenu);
+
+    checkMenu.setName(request.getName());
+    checkMenu.setPrice(request.getPrice());
+
+    return MenuResponse.createMenuResponse(request.getName(),request.getPrice());
+  }
+
+  private void crossCheckEmail(String email, User needCheckUser) {
+    if(!(needCheckUser.getEmail().equals(email))) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+  }
+
+  private void crossCheckUser(String email, Menu checkMenu) {
+    if(!(checkMenu.getUser()==userRepository.findByEmailOrElesThrow(email))) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
   }
 
 }

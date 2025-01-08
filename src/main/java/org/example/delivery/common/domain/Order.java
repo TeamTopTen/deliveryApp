@@ -36,13 +36,6 @@ public class Order extends BaseEntity {
     this.orderStatus = orderStatus;
   }
 
-  // 나중에 삭제
-  public Order(User user, Store store, Menu menu, OrderStatus orderStatus) {
-    this.user = user;
-    this.store = store;
-    this.menu = menu;
-    this.orderStatus = orderStatus;
-  }
 
   public void changeOrderStatus(OrderStatus orderStatus) {
     this.orderStatus = orderStatus;

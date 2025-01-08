@@ -1,7 +1,11 @@
 package org.example.delivery.order.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.delivery.common.domain.Menu;
 import org.example.delivery.common.domain.Order;
+import org.example.delivery.common.domain.OrderStatus;
+import org.example.delivery.common.domain.Store;
+import org.example.delivery.common.domain.User;
 import org.example.delivery.menu.repository.MenuRepository;
 import org.example.delivery.order.model.request.OrderCreateRequest;
 import org.example.delivery.order.repository.OrderRepository;
@@ -23,11 +27,13 @@ public class OrderService {
       Long menuId,
       OrderCreateRequest request) {
 
-//    User user = userRepository.findUserByUserIdOrElseThrow(userId);
-//    Store store = storeRepository.findStoreByStoreIdOrElseThrow(storeId);
-//    Menu menu = menuRepository.findMenuByMenuIdOrElseThrow(storeId);
-//    Order order = new Order(user, store, menu, request.getOrderStatus());
-    Order order = new Order(request.getOrderStatus());
+    User user = userRepository.findUserByUserIdOrElseThrow(userId);
+    Store store = storeRepository.findStoreByStoreIdOrElseThrow(storeId);
+    Menu menu = menuRepository.findMenuByMenuIdOrElseThrow(storeId);
+    Order order = new Order(user, store, menu, request.getOrderStatus());
+
+    OrderStatus orderStatus = OrderStatus.of(request.getOrderStatus());
+    Order order = new Order(orderStatus);
     orderRepository.save(order);
   }
 }

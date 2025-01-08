@@ -3,10 +3,10 @@ package org.example.delivery.order.model.dto;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.example.delivery.common.entity.Menu;
-import org.example.delivery.common.entity.Order;
-import org.example.delivery.common.entity.Store;
-import org.example.delivery.common.entity.User;
+import org.example.delivery.common.domain.Menu;
+import org.example.delivery.common.domain.Order;
+import org.example.delivery.common.domain.Store;
+import org.example.delivery.common.domain.User;
 
 @Getter
 @AllArgsConstructor

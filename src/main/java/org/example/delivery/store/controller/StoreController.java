@@ -1,11 +1,13 @@
 package org.example.delivery.store.controller;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.delivery.auth.Annotation.Auth;
 import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.store.model.dto.request.StoreRequest;
-import org.example.delivery.store.model.dto.response.GetStoreResponse;
+import org.example.delivery.store.model.dto.response.GetStoresResponse;
+import org.example.delivery.store.model.dto.response.GetStoreByIdResponse;
 import org.example.delivery.store.model.dto.response.StoreResponse;
 import org.example.delivery.store.service.StoreService;
 import org.springframework.http.HttpStatus;
@@ -40,8 +42,15 @@ public class StoreController {
 
 
   @GetMapping("/{store_id}/users")
-  public ResponseEntity<GetStoreResponse> getStore(@PathVariable long store_id) {
-    GetStoreResponse response = storeService.getStore(store_id);
+  public ResponseEntity<GetStoreByIdResponse> getStoreById(@PathVariable long store_id) {
+    GetStoreByIdResponse response = storeService.getStoreById(store_id);
+
+    return new ResponseEntity<>(response, HttpStatus.OK);
+  }
+
+  @GetMapping("/users")
+  public ResponseEntity<List<GetStoresResponse>> getAllStores() {
+    List<GetStoresResponse> response = storeService.getAllStores();
 
     return new ResponseEntity<>(response, HttpStatus.OK);
   }

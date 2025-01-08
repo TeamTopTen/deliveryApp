@@ -7,15 +7,20 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-@NotBlank
-@NotNull
 public class MenuRequest {
 
   public MenuRequest() {
   }
-
+  @NotBlank
+  @NotNull
   private String email;
+
+  @NotBlank
+  @NotNull
   private String name;
+
+
+  @NotNull
   private Integer price;
   private Long storeId;
 

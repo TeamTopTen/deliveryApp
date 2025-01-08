@@ -4,9 +4,13 @@ package org.example.delivery.menu.service;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.delivery.auth.repository.UserRepository;
 import org.example.delivery.common.domain.Menu;
 import org.example.delivery.common.domain.User;
+import org.example.delivery.common.exception.ErrorCode;
+import org.example.delivery.common.exception.base.AccessDeniedException;
+import org.example.delivery.common.exception.base.NotFoundException;
 import org.example.delivery.menu.model.request.MenuRequest;
 import org.example.delivery.menu.model.response.MenuResponse;
 import org.example.delivery.menu.repository.MenuRepository;
@@ -18,6 +22,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MenuService {
 
   private final MenuRepository menuRepository;
@@ -28,23 +33,26 @@ public class MenuService {
   public void createMenu(MenuRequest request, String email) {
 
     User needCheckUser = userRepository.findUsersByEmail(email)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
+        .orElseThrow(() -> new NotFoundException(ErrorCode.MENU_NOT_FOUND));
+    log.info("user_email :{}",needCheckUser.getEmail());
     ProxyStore proxyStore = proxyStoreRepository.findById(request.getStoreId())
-        .orElseThrow(() -> new ResponseStatusException(
-            HttpStatus.NOT_FOUND));
+        .orElseThrow(() -> new NotFoundException(ErrorCode.MENU_NOT_FOUND));
+    log.info("proxyStore_Id :{}",proxyStore.getId());
 
     Menu.ownerCheck(needCheckUser);
     Menu.storeCheck(needCheckUser,proxyStore);
-    Menu menu = Menu.menuCreate(request.getName(), request.getPrice(), needCheckUser, proxyStore);
+    log.info("user_email_2 :{}",needCheckUser.getEmail());
+    log.info("proxyStore_Id_2 :{}",proxyStore.getId());
+    Menu menu = Menu.menuCreate(request.getName(), request.getPrice(), proxyStore , needCheckUser );
+    log.info("Menu_name :{}",menu.getName());
     menuRepository.save(menu);
   }
 
   @Transactional
   public List<MenuResponse> findMenu(Long storeId) {
-
+    log.info("2");
     List<Menu> findMenuList = menuRepository.findByStore_IdAndIsDeleted(storeId,false);
-
+    log.info("3");
     return MenuResponse.createMenuResponseList(findMenuList);
   }
 
@@ -55,7 +63,7 @@ public class MenuService {
     menuRepository.checkDeleteById(id);
     crossCheckUser(email, checkMenu);
 
-    Menu menu = Menu.menuCreate(request.getName(), request.getPrice(), checkMenu.getUser(), checkMenu.getStore());
+    Menu menu = Menu.menuPut(checkMenu.getId(),request.getName(), request.getPrice(), checkMenu.getStore(), checkMenu.getUser());
     menuRepository.save(menu);
 
     return MenuResponse.createMenuResponse(request.getName(),request.getPrice());
@@ -75,13 +83,13 @@ public class MenuService {
 
   private void crossCheckEmail(String email, User needCheckUser) {
     if(!(needCheckUser.getEmail().equals(email))) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+      throw new AccessDeniedException(ErrorCode.MENU_ACCESS_DENIED);
     }
   }
 
   private void crossCheckUser(String email, Menu checkMenu) {
     if(!(checkMenu.getUser()==userRepository.findUsersByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)))) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+      throw new AccessDeniedException(ErrorCode.MENU_ACCESS_DENIED);
     }
   }
 }

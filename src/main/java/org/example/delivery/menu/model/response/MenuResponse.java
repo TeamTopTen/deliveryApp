@@ -4,8 +4,10 @@ import static java.awt.SystemColor.menu;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 import org.example.delivery.common.domain.Menu;
 
+@Getter
 public class MenuResponse {
 
   private String name;

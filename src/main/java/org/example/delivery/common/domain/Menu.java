@@ -36,9 +36,6 @@ public class Menu extends BaseEntity {
 
   private Boolean isDeleted = Boolean.FALSE;
 
-  private Menu(String name, Integer price, User user, ProxyStore store) {
-  }
-
   private Menu(String name, Integer price, ProxyStore store, User user) {
     this.name = name;
     this.price = price;
@@ -46,12 +43,24 @@ public class Menu extends BaseEntity {
     this.user = user;
   }
 
+  public Menu(Long id, String name, Integer price, ProxyStore store,User user) {
+    this.id = id;
+    this.name = name;
+    this.price = price;
+    this.user = user;
+    this.store = store;
+  }
+
   public Menu() {
 
   }
 
-  public static Menu menuCreate(String name,Integer price,User user,ProxyStore store) {
-    return new Menu(name,price,user,store);
+  public static Menu menuCreate(String name,Integer price,ProxyStore store,User user) {
+    return new Menu(name,price,store,user);
+  }
+
+  public static Menu menuPut(Long id,String name,Integer price,ProxyStore store,User user) {
+    return new Menu(id,name,price,store,user);
   }
 
   public static void ownerCheck(User user) { // 1

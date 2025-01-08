@@ -67,6 +67,7 @@ public class AuthService {
     return new LoginResponse(bearerToken);
   }
 
+
   // 회원 삭제
   @Transactional
   public void deregister(DeregisterRequest request, String email) {

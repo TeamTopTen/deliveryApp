@@ -36,7 +36,8 @@ public class JwtFilter implements Filter {
 
     String url = httpRequest.getRequestURI();
 
-    if (url.startsWith("/auth")) {
+
+    if (url.startsWith("/auth/register")||url.startsWith("/auth/login")) {
       chain.doFilter(request, response);
       return;
     }
@@ -59,7 +60,8 @@ public class JwtFilter implements Filter {
 
       UserRole userRole = UserRole.valueOf(claims.get("userRole", String.class));
 
-      httpRequest.setAttribute("userId", Long.parseLong(claims.getSubject()));
+
+      httpRequest.setAttribute("id", Long.parseLong(claims.getSubject()));
       httpRequest.setAttribute("email", claims.get("email"));
       httpRequest.setAttribute("userRole", claims.get("userRole"));
 

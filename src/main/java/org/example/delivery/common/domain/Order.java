@@ -32,7 +32,8 @@ public class Order extends BaseEntity {
   private OrderStatus orderStatus;
 
 
-  public Order(OrderStatus orderStatus) {
+  public Order(User user, OrderStatus orderStatus) {
+    this.user = user;
     this.orderStatus = orderStatus;
   }
 

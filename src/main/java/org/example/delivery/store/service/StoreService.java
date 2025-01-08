@@ -40,7 +40,9 @@ public class StoreService {
     Store foundStore = storeRepository.findById(storeId)
         .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
-    storeRepository.save(foundStore.updateWith(request));
+    foundStore.updateWith(request);
+
+    storeRepository.save(foundStore);
 
     return new StoreResponse("수정이 정상적으로 완료되었습니다.");
   }

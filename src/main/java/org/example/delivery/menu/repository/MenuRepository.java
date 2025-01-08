@@ -9,12 +9,19 @@ import org.springframework.web.server.ResponseStatusException;
 
 public interface MenuRepository extends JpaRepository<Menu, Long> {
 
-  List<Menu> findByStore_Id(Long storeId);
-
   Optional<Menu> findById();
+
+  List<Menu> findByStore_IdAndIsDeleted(Long storeId, Boolean isDeleted
+  );
+  default List<Menu> findByStore_Id
 
   default Menu findByIdOrElseThrow(Long id) {
     return findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND));
   }
 
+  default void checkDeleteById(Long id) {
+    if(!(findByIdOrElseThrow(id).getIsDeleted())) {
+      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+  }
 }

@@ -3,6 +3,7 @@ package org.example.delivery.menu.service;
 
 import jakarta.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.example.delivery.common.domain.Menu;
 import org.example.delivery.common.domain.User;
@@ -44,21 +45,31 @@ public class MenuService {
   @Transactional
   public List<MenuResponse> findMenu(Long storeId) {
 
-    List<Menu> byStoreId = menuRepository.findByStore_Id(storeId);
+    List<Menu> findMenuList = menuRepository.findByStore_IdAndIsDeleted(storeId,false);
 
-    return MenuResponse.createMenuResponseList(byStoreId);
+    return MenuResponse.createMenuResponseList(findMenuList);
   }
 
   @Transactional
   public MenuResponse putMenu(Long id,MenuRequest request,String email) {
 
     Menu checkMenu = menuRepository.findByIdOrElseThrow(id);
+    menuRepository.checkDeleteById(id);
     crossCheckUser(email, checkMenu);
 
     checkMenu.setName(request.getName());
     checkMenu.setPrice(request.getPrice());
 
     return MenuResponse.createMenuResponse(request.getName(),request.getPrice());
+  }
+
+  @Transactional
+  public void softDeleteMenu(Long id,String email) {
+
+    Menu checkMenu = menuRepository.findByIdOrElseThrow(id);
+    menuRepository.checkDeleteById(id);
+    crossCheckUser(email, checkMenu);
+    checkMenu.setDeleted(true);
   }
 
   private void crossCheckEmail(String email, User needCheckUser) {
@@ -72,5 +83,13 @@ public class MenuService {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
   }
-
 }
+
+
+
+//Optional<User> findByEmail(String email);
+//
+//default User findByEmailOrElesThrow(String email) {
+//  return findByEmail(email).orElseThrow(
+//      () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+//}

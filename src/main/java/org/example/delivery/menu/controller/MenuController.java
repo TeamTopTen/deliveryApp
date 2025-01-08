@@ -11,6 +11,7 @@ import org.example.delivery.menu.model.request.MenuRequest;
 import org.example.delivery.menu.model.response.MenuResponse;
 import org.example.delivery.menu.service.MenuService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -66,5 +67,22 @@ public class MenuContoller {
 //    request.getEmail() ==
 
     return ResponseEntity.ok().body(menuService.putMenu(id,request,email));
+  }
+
+  @PatchMapping("{menu_id}/owners")
+  public ResponseEntity<String> softDeleteMenu(@PathVariable("menu_id") Long id,
+      @RequestHeader("Authorization") String authorization) {
+
+    //    String token = authorization.substring(7);
+//
+//    claims claims = jwtTokenProvider.validateProvider(token);
+//
+//    String email = claims.getSubject();
+//
+//    request.getEmail() ==
+
+    menuService.softDeleteMenu(id,email);
+
+    return ResponseEntity.ok("메뉴가 정상적으로 삭제되었습니다.");
   }
 }

@@ -35,6 +35,8 @@ public class Menu extends BaseEntity {
   @JoinColumn(name = "store_id")
   private ProxyStore store;
 
+  private Boolean isDeleted = Boolean.FALSE;
+
   private Menu(String name, Integer price, User user, ProxyStore store) {
   }
 
@@ -71,5 +73,9 @@ public class Menu extends BaseEntity {
 
   public void setPrice(Integer price) {
     this.price = price;
+  }
+
+  public void setDeleted(Boolean deleted) {
+    isDeleted = deleted;
   }
 }

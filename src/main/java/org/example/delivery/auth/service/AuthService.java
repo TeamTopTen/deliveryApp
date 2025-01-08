@@ -1,6 +1,8 @@
 package org.example.delivery.auth.service;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
+import org.example.delivery.auth.model.request.DeregisterRequest;
 import org.example.delivery.auth.model.request.LoginRequest;
 import org.example.delivery.auth.model.response.LoginResponse;
 import org.example.delivery.common.config.encode.PasswordEncoder;
@@ -60,13 +62,23 @@ public class AuthService {
       throw new AuthException(ErrorCode.AUTHENTICATION_FAILED);
     }
 
-    String bearerToken = jwtUtil.createToken(user.getId(), user.getName(), user.getUserRole());
+    String bearerToken = jwtUtil.createToken(user.getId(), user.getEmail(), user.getUserRole());
 
     return new LoginResponse(bearerToken);
   }
 
-  // 로그아웃
 
   // 회원 삭제
+  @Transactional
+  public void deregister(DeregisterRequest request, String email) {
 
+    System.out.println(email);
+    User user = userRepository.findUsersByEmail(email)
+        .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
+
+    if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+      throw new AuthException(ErrorCode.AUTHENTICATION_FAILED);
+    }
+    user.deleteUser();
+  }
 }

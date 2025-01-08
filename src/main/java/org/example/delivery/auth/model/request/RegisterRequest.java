@@ -23,7 +23,12 @@ public record RegisterRequest(
     )
     String name,
     String address,
-    Integer phoneNumber,
+
+    @Pattern(
+        regexp = "^(01[0-9])(\\d{3,4})(\\d{4})$",
+        message = "휴대폰 번호는 숫자만 입력할 수 있습니다."
+    )
+    String phoneNumber,
     String userRole
 ) {
 }

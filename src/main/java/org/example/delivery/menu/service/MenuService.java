@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.example.delivery.auth.repository.UserRepository;
 import org.example.delivery.common.domain.Menu;
 import org.example.delivery.common.domain.User;
 import org.example.delivery.menu.model.request.MenuRequest;
@@ -12,7 +13,6 @@ import org.example.delivery.menu.model.response.MenuResponse;
 import org.example.delivery.menu.repository.MenuRepository;
 import org.example.delivery.store.ProxyStore;
 import org.example.delivery.store.ProxyStoreRepository;
-import org.example.delivery.user.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,9 +28,8 @@ public class MenuService {
   @Transactional
   public void createMenu(MenuRequest request, String email) {
 
-    User needCheckUser = userRepository.findByEmailOrElesThrow(request.getEmail());
-
-    crossCheckEmail(email, needCheckUser);
+    User needCheckUser = userRepository.findUsersByEmail(email)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
     ProxyStore proxyStore = proxyStoreRepository.findById(request.getStoreId())
         .orElseThrow(() -> new ResponseStatusException(
@@ -57,8 +56,8 @@ public class MenuService {
     menuRepository.checkDeleteById(id);
     crossCheckUser(email, checkMenu);
 
-    checkMenu.setName(request.getName());
-    checkMenu.setPrice(request.getPrice());
+    Menu menu = Menu.menuCreate(request.getName(), request.getPrice(), checkMenu.getUser(), checkMenu.getStore());
+    menuRepository.save(menu);
 
     return MenuResponse.createMenuResponse(request.getName(),request.getPrice());
   }
@@ -67,7 +66,10 @@ public class MenuService {
   public void softDeleteMenu(Long id,String email) {
 
     Menu checkMenu = menuRepository.findByIdOrElseThrow(id);
+    crossCheckEmail(email,checkMenu.getUser());
+
     menuRepository.checkDeleteById(id);
+
     crossCheckUser(email, checkMenu);
     checkMenu.setDeleted(true);
   }
@@ -79,17 +81,9 @@ public class MenuService {
   }
 
   private void crossCheckUser(String email, Menu checkMenu) {
-    if(!(checkMenu.getUser()==userRepository.findByEmailOrElesThrow(email))) {
+    if(!(checkMenu.getUser()==userRepository.findUsersByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)))) {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND);
     }
   }
 }
 
-
-
-//Optional<User> findByEmail(String email);
-//
-//default User findByEmailOrElesThrow(String email) {
-//  return findByEmail(email).orElseThrow(
-//      () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-//}

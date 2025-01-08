@@ -12,7 +12,7 @@ import org.example.delivery.common.domain.User;
 
 
 @Entity
-@Table(name="table")
+@Table(name="store")
 @Getter
 public class ProxyStore {
 

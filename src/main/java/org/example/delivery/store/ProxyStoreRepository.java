@@ -6,5 +6,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProxyStoreRepository extends JpaRepository<ProxyStore, Long> {
 
-  ProxyStore findByEmail(String email);
 }

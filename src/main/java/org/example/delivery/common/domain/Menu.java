@@ -1,7 +1,6 @@
 package org.example.delivery.common.domain;
 
-
-import static org.example.delivery.user.model.UserRole.ADMIN;
+import static org.example.delivery.auth.model.UserRole.OWNER;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -56,7 +55,7 @@ public class Menu extends BaseEntity {
   }
 
   public static void ownerCheck(User user) { // 1
-    if(!(user.getUserRole() == ADMIN || user.isDeleted())) {
+    if(!(user.getUserRole() == OWNER || user.isDeleted())) {
       throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"권한이 없습니다.");
     }
   }

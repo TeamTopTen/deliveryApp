@@ -1,10 +1,10 @@
 package org.example.delivery.store.service;
 
-import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.auth.repository.UserRepository;
 import org.example.delivery.common.domain.Menu;
 import org.example.delivery.common.domain.Store;
@@ -24,12 +24,10 @@ public class StoreService {
 
   private StoreRepository storeRepository;
   private UserRepository userRepository;
-  private final HttpSession session;
 
-  public StoreResponse createStore(StoreRequest request) {
+  public StoreResponse createStore(AuthUser authUser, StoreRequest request) {
 
-    Long userId = (Long) session.getAttribute("logged_user");
-    User foundUser = userRepository.findById(userId)
+    User foundUser = userRepository.findById(authUser.id())
         .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
     Store store = Store.makeWith(foundUser, request);

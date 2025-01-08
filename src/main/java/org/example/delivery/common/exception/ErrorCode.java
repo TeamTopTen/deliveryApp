@@ -29,6 +29,8 @@ public enum ErrorCode {
   USER_CONFLICT(HttpStatus.CONFLICT, "U409", "이미 존재하는 유저입니다."),
 
   //Token
+  TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED,"T401", "유효하지 않은 토큰입니다."),
+  TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "T404","존재하지 않는 토큰입니다."),
 
 
   //Menu

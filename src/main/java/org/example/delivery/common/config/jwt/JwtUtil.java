@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.example.delivery.auth.model.UserRole;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 @Slf4j
 @Component
@@ -53,7 +52,7 @@ public class JwtUtil {
       return bearerToken.substring(7);
     }
     log.info("=== if 문 바깥 ===" + bearerToken);
-    throw new RuntimeException("토큰을 찾을 수 없습니다."); //TODO 토큰 예외 처리 만들기
+    throw new RuntimeException("토큰을 찾을 수 없습니다.");
   }
 
   public Claims extractClaims(String token) {

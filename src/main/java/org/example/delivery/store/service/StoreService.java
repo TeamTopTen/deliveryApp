@@ -56,7 +56,7 @@ public class StoreService {
 
   public List<GetStoresResponse> getAllStores() {
 
-    return storeRepository.findAll()
+    return storeRepository.findAllByDeletedFalse()
         .stream()
         .map(GetStoresResponse::toDto)
         .toList();

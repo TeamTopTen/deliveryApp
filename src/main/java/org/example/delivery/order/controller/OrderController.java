@@ -1,5 +1,6 @@
 package org.example.delivery.order.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.delivery.auth.Annotation.Auth;
@@ -45,7 +46,7 @@ public class OrderController {
   @GetMapping("/orders")
   public ResponseEntity<Page<OrderPageDto>> getOrders(
       @Auth AuthUser authUser,
-      @RequestParam(defaultValue = "5") int size,
+      @RequestParam(defaultValue = "10") int size,
       @RequestParam(defaultValue = "1") int page
   ) {
     Pageable pageable = PageRequest.of(page - 1, size);

@@ -39,11 +39,9 @@ public class OrderService {
       Long storeId,
       Long menuId,
       OrderCreateRequest request) {
-    // 유저가 어떤 유저 인지 판단하는 로직생성
-    // 만약 유저가 사업자이면 주문을 못한단고 반환
-    //authUser
-    Long userId =  authUser.id();
+
     String userRole =  authUser.userRole().getUserRole();
+    Long userId = authUser.id();
 
     if (userRole.equals("owner")){
       throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
@@ -56,8 +54,9 @@ public class OrderService {
         new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
 
     OrderStatus orderStatus = OrderStatus.of("ORDERED");
+
     Order order = new Order(user, store, orderStatus);
-    System.out.println(order.getStore());
+
     orderRepository.save(order);
   }
 
@@ -69,9 +68,8 @@ public class OrderService {
     // orderId
 
     Long userId =  authUser.id(); // 주문한 사람
+
     String userRole =  authUser.userRole().getUserRole();
-    System.out.println(userId);
-    System.out.println(userRole);
 
     if (userRole.equals("owner")){
       return orderRepository.findOrdersByStoreUserId(userId, pageable);
@@ -80,6 +78,7 @@ public class OrderService {
     return orderRepository.findOrdersByUserId(userId, pageable);
 
   }
+
 
   @Transactional(readOnly = true)
   public OrderDto findOrderbyOrderId(AuthUser authUser, Long orderId) {
@@ -111,12 +110,18 @@ public class OrderService {
     Long userId =  authUser.id();
     String userRole =  authUser.userRole().getUserRole();
 
-    User user = userRepository.findById(userId).orElseThrow(() ->
-        new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
-
     Order order = orderRepository.findOrderByOrderIdOrElseThrow(orderId);
 
-    order.changeOrderStatus(OrderStatus.of(request.getOrderStatus()));
+    OrderStatus status = OrderStatus.of(request.getOrderStatus());
+
+    System.out.println(userRole);
+    System.out.println(status.getActor());
+
+    if (!status.getActor().equalsIgnoreCase(userRole)) {
+      throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+    }
+
+    order.changeOrderStatus(status);
   }
 
   @Transactional

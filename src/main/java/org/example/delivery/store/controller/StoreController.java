@@ -43,8 +43,8 @@ public class StoreController {
 
 
   @GetMapping("/{store_id}/users")
-  public ResponseEntity<GetStoreByIdResponse> getStoreById(@PathVariable long store_id) {
-    GetStoreByIdResponse response = storeService.getStoreById(store_id);
+  public ResponseEntity<GetStoreByIdResponse> getStoreById(@PathVariable(name = "store_id") long storeId) {
+    GetStoreByIdResponse response = storeService.getStoreById(storeId);
 
     return new ResponseEntity<>(response, HttpStatus.OK);
   }

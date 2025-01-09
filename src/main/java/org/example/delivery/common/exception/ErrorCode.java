@@ -38,6 +38,8 @@ public enum ErrorCode {
   MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "M404", "일치하는 정보가 없습니다."),
 
   //Order
+  ORDER_ACCESS_DENIED(HttpStatus.FORBIDDEN, "O403", "주문은 유저만 등록/삭제 할 수 있습니다."),
+  ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "O404", "존재하지 않는 주문입니다."),
 
 
   //Review

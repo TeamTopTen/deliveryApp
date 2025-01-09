@@ -1,13 +1,11 @@
 package org.example.delivery.order.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.delivery.auth.Annotation.Auth;
 import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.order.model.dto.OrderDto;
 import org.example.delivery.order.model.dto.OrderPageDto;
-import org.example.delivery.order.model.request.OrderCreateRequest;
 import org.example.delivery.order.model.request.OrderUpdateRequest;
 import org.example.delivery.order.service.OrderService;
 import org.springframework.data.domain.Page;
@@ -35,10 +33,9 @@ public class OrderController {
   public ResponseEntity<String> createOrder(
       @Auth AuthUser authUser,
       @PathVariable("storeId") Long storeId,
-      @PathVariable("menuId") Long menuId,
-      @Valid @RequestBody OrderCreateRequest request
+      @PathVariable("menuId") Long menuId
   ) {
-    orderService.createOrder(authUser, storeId, menuId, request);
+    orderService.createOrder(authUser, storeId, menuId);
     return new ResponseEntity<>("등록되었습니다. ", HttpStatus.CREATED);
   }
 

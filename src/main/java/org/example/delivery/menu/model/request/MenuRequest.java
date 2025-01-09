@@ -22,6 +22,5 @@ public class MenuRequest {
 
   @NotNull
   private Integer price;
-  private Long storeId;
 
 }

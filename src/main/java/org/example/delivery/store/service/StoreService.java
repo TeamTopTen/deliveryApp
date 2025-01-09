@@ -1,17 +1,17 @@
 package org.example.delivery.store.service;
 
 import java.lang.module.InvalidModuleDescriptorException;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.auth.repository.UserRepository;
-import org.example.delivery.common.domain.Menu;
 import org.example.delivery.common.domain.Store;
 import org.example.delivery.common.domain.User;
 import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.NotFoundException;
+import org.example.delivery.menu.model.response.MenuResponse;
+import org.example.delivery.menu.repository.MenuRepository;
 import org.example.delivery.store.model.dto.request.StoreRequest;
 import org.example.delivery.store.model.dto.response.GetStoresResponse;
 import org.example.delivery.store.model.dto.response.GetStoreByIdResponse;
@@ -26,10 +26,11 @@ public class StoreService {
 
   private StoreRepository storeRepository;
   private UserRepository userRepository;
+  private MenuRepository menuRepository;
 
   public StoreResponse createStore(AuthUser authUser, StoreRequest request) {
 
-    if (storeRepository.countStoreByUserId(authUser.id()) >= 3){
+    if (storeRepository.countStoreByUserId(authUser.id()) >= 3) {
       throw new InvalidModuleDescriptorException(ErrorCode.TOO_MANY_STORES.getCode());
     }
 
@@ -46,7 +47,8 @@ public class StoreService {
     Store foundStore = storeRepository.findById(storeId).
         orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
-    List<Menu> menus = new ArrayList<>(); // 이후 메뉴 리포지토리 확인 후 코드 수정 예정.
+    List<MenuResponse> menus = menuRepository.findByStore_IdAndIsDeleted(storeId, false).stream()
+        .map(MenuResponse::createMenuResponse).toList();
 
     return GetStoreByIdResponse.with(foundStore, menus);
   }

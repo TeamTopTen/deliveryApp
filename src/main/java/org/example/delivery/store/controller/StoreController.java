@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,7 +31,7 @@ public class StoreController {
 
 
   @PostMapping("/owners")
-  public ResponseEntity<StoreResponse> createStore(
+  public ResponseEntity<StoreResponse> createStoreAPI(
       @Auth AuthUser authUser,
       @RequestBody StoreRequest request) {
 
@@ -43,14 +42,14 @@ public class StoreController {
 
 
   @GetMapping("/{store_id}/users")
-  public ResponseEntity<GetStoreByIdResponse> getStoreById(@PathVariable(name = "store_id") long storeId) {
+  public ResponseEntity<GetStoreByIdResponse> getStoreByIdAPI(@PathVariable(name = "store_id") long storeId) {
     GetStoreByIdResponse response = storeService.getStoreById(storeId);
 
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
   @GetMapping("/users")
-  public ResponseEntity<List<GetStoresResponse>> getAllStores() {
+  public ResponseEntity<List<GetStoresResponse>> getAllStoresAPI() {
     List<GetStoresResponse> response = storeService.getAllStores();
 
     return new ResponseEntity<>(response, HttpStatus.OK);
@@ -58,7 +57,7 @@ public class StoreController {
 
 
   @PutMapping("{store_id}/owners")
-  public ResponseEntity<StoreResponse> updateStore(
+  public ResponseEntity<StoreResponse> updateStoreAPI(
       @PathVariable(name = "store_id") Long storeId, @RequestBody StoreRequest request) {
 
     StoreResponse response = storeService.updateStore(storeId, request);
@@ -67,7 +66,7 @@ public class StoreController {
   }
 
   @PatchMapping("/{store_id}/owners")
-  public ResponseEntity<Void> deleteStore(@PathVariable(name = "store_id") Long storeId) {
+  public ResponseEntity<Void> deleteStoreAPI(@PathVariable(name = "store_id") Long storeId) {
     storeService.deleteStore(storeId);
 
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);

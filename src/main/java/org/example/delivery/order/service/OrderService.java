@@ -1,6 +1,8 @@
 package org.example.delivery.order.service;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.example.delivery.auth.model.UserRole;
 import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.auth.repository.UserRepository;
 import org.example.delivery.common.domain.Menu;
@@ -63,14 +65,10 @@ public class OrderService {
 
   @Transactional(readOnly = true)
   public Page<OrderPageDto> findOrders(AuthUser authUser, Pageable pageable) {
-    // 유저가 어떤 유저 인지 판단하는 로직생성
-    // 만약 유저가 사업자이면 주문을 못한단고 반환
-    // authUser
-    // orderId
 
-    Long userId = authUser.id(); // 주문한 사람
-
+    Long userId = authUser.id();
     String userRole = authUser.userRole().getUserRole();
+    // 로그인 한사람이 owner이면
 
     if (userRole.equals("owner")) {
       return orderRepository.findOrdersByStoreUserId(userId, pageable);
@@ -83,23 +81,17 @@ public class OrderService {
 
   @Transactional(readOnly = true)
   public OrderDto findOrderbyOrderId(AuthUser authUser, Long orderId) {
-    // 유저가 어떤 유저 인지 판단하는 로직생성
-    // 만약 유저가 사업자이면 주문을 못한단고 반환
-    // authUser
-    // orderId
-    //Long userId = 1L;
 
     Long userId = authUser.id();
+
     String userRole = authUser.userRole().getUserRole();
 
     if (userRole.equals("owner")) {
-      throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+      Order order = orderRepository.findOrderByStoreUserIdAndOrderIdOrElseThrow(userId, orderId);
+      return new OrderDto(order);
     }
-
-    Order order = orderRepository.findOrderByOrderIdOrElseThrow(orderId);
-
+    Order order = orderRepository.findOrderByUserIdAndOrderIdOrElseThrow(userId, orderId);
     return new OrderDto(order);
-
   }
 
   @Transactional
@@ -109,19 +101,17 @@ public class OrderService {
       OrderUpdateRequest request) {
 
     Long userId = authUser.id();
-    String userRole = authUser.userRole().getUserRole();
 
-    Order order = orderRepository.findOrderByOrderIdOrElseThrow(orderId);
+    String userRole = authUser.userRole().getUserRole();
 
     OrderStatus status = OrderStatus.of(request.getOrderStatus());
 
-    System.out.println(userRole);
-    System.out.println(status.getActor());
-
-    if (!status.getActor().equalsIgnoreCase(userRole)) {
-      throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+    if (userRole.equals("owner")) {
+      Order order = orderRepository.findOrderByStoreUserIdAndOrderIdOrElseThrow(userId, orderId);
+      order.changeOrderStatus(status);
     }
 
+    Order order = orderRepository.findOrderByUserIdAndOrderIdOrElseThrow(userId, orderId);
     order.changeOrderStatus(status);
   }
 
@@ -130,7 +120,15 @@ public class OrderService {
       AuthUser authUser,
       Long orderId
   ) {
-    Order order = orderRepository.findOrderByOrderIdOrElseThrow(orderId);
+    Long userId = authUser.id();
+
+    String userRole = authUser.userRole().getUserRole();
+
+    if (userRole.equals("owner")) {
+      throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+    }
+
+    Order order = orderRepository.findOrderByUserIdAndOrderIdOrElseThrow(userId, orderId);
 
     order.changeOrderStatus(OrderStatus.of("CANCELLED"));
   }

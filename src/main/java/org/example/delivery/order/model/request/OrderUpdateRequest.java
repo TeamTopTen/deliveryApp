@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class OrderUpdateRequest {
+
   @NotNull(message = "Order is required")
   private String orderStatus;
 }

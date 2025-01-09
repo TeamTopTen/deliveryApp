@@ -19,6 +19,7 @@ import org.example.delivery.common.domain.Menu;
 import org.example.delivery.common.domain.Store;
 import org.example.delivery.common.domain.User;
 import org.example.delivery.common.exception.ErrorCode;
+import org.example.delivery.common.exception.base.AccessDeniedException;
 import org.example.delivery.common.exception.base.InvalidRequestException;
 import org.example.delivery.common.exception.base.NotFoundException;
 import org.example.delivery.menu.model.request.MenuRequest;
@@ -278,6 +279,44 @@ public class MenuServiceTest {
     verify(menuRepository,times(ONE_TIME)).checkDeleteById(menuId);
     verify(menuRepository,never()).save(menu);
     Assertions.assertEquals(ErrorCode.MENU_NOT_FOUND.getMessage(),notFoundException.getMessage());
+  }
+
+  @Test
+  public void 메뉴_수정_실패_CASE_메뉴가_자신의_가게_것이_아닐때() {
+    MenuRequest request = new MenuRequest("test1@test.com","수정된 맛있는 음식",2000);
+    Long menuId = 1L;
+    String email = "test1@test.com";
+    User user = new User("test1@test.com", "Test1234!@#$", "test", "0101111111", "testaddress",
+        UserRole.OWNER);
+    User testUser = new User("failtest1@test.com", "Test1234!@#$", "test", "0101111111", "testaddress",
+        UserRole.OWNER);
+    Store store = new Store(user,"맛나식당","01011111111","한국 어딘가","111-11-11111",
+        100, Time.valueOf(LocalTime.now()),Time.valueOf(LocalTime.now()));
+    Menu menu = Menu.menuCreateWithTestCode(menuId,"맛있는 음식",1000,store,testUser,false);
+
+    when(menuRepository.findByIdOrElseThrow(menuId)).thenReturn(menu);
+
+    doAnswer(invocation -> {
+      Long id = invocation.getArgument(0);
+      if(menu.getIsDeleted()) {
+        throw new NotFoundException(ErrorCode.MENU_NOT_FOUND);
+      }
+      return null;
+    }).when(menuRepository).checkDeleteById(menuId);
+
+    when(userRepository.findUsersByEmail(email)).thenReturn(Optional.ofNullable(user));
+
+    //when
+    AccessDeniedException accessDeniedException = Assertions.assertThrows(AccessDeniedException.class, () -> {
+      menuService.putMenu(menuId, request, email);
+    });
+
+
+    //then
+    verify(userRepository,times(ONE_TIME)).findUsersByEmail(email);
+    verify(menuRepository,never()).save(menu);
+    Assertions.assertEquals(ErrorCode.MENU_ACCESS_DENIED.getMessage(),accessDeniedException.getMessage());
+    org.assertj.core.api.Assertions.assertThat(menu.getUser().getEmail()).isNotEqualTo(user.getEmail());
   }
 }
 

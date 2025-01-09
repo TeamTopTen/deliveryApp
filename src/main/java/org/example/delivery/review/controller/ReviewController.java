@@ -1,5 +1,41 @@
 package org.example.delivery.review.controller;
 
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.example.delivery.auth.Annotation.Auth;
+import org.example.delivery.auth.model.dto.AuthUser;
+import org.example.delivery.review.model.request.ReviewCreateRequest;
+import org.example.delivery.review.service.ReviewService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api")
 public class ReviewController {
 
+  private final ReviewService reviewService;
+
+  // 리뷰 생성 Post /api/orders/{order_id}/reviews
+  @PostMapping("/orders/{orderId}/reviews")
+  public ResponseEntity<String> createReview(
+      @Auth AuthUser authUser,
+      @PathVariable("orderId") Long orderId,
+      @Valid @RequestBody ReviewCreateRequest request
+  ) {
+
+    reviewService.createReview(authUser, orderId, request);
+
+    return new ResponseEntity<>("등록되었습니다. ", HttpStatus.CREATED);
+  }
+
+// 리뷰 전체 최신순 조회 GET /api/orders/{order_id}/reviews
+  // 리뷰 별점 범위 조회 GET /api/orders/{order_id}/reviews?minStar={minStar}&maxStar={maxStar}
+  //리뷰 수정 /api/orders/{order_id}/reviews/{review_id}
+  // 리뷰 삭제 /api/orders/{order_id}/reviews/{review_id}
 }

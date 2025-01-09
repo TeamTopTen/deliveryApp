@@ -14,9 +14,9 @@ import org.example.delivery.common.domain.User;
 public class OrderDto {
   private Long orderId;
   private String userName;
-//  private String storeName;
-//  private String menuName;
-//  private float menuPrice;
+  private String storeName;
+  private String menuName;
+  private Integer menuPrice;
   private OrderStatus orderStatus;
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;

@@ -1,6 +1,7 @@
 package org.example.delivery.unit.order.service;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -16,10 +17,12 @@ import org.example.delivery.common.domain.Order;
 import org.example.delivery.common.domain.OrderStatus;
 import org.example.delivery.common.domain.Store;
 import org.example.delivery.common.domain.User;
+import org.example.delivery.common.exception.base.BusinessException;
 import org.example.delivery.menu.repository.MenuRepository;
 import org.example.delivery.order.repository.OrderRepository;
 import org.example.delivery.order.service.OrderService;
 import org.example.delivery.store.repository.StoreRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -94,6 +97,54 @@ public class OrderServiceTest {
 
     //then
     verify(orderRepository,times(ONE_TIME)).save(any(Order.class));
+
+  }
+
+  @Test
+  public void 주문_생성_실패_CASE_1_UserRole이_OWNER_일_때_테스트() {
+    //given
+    String email = "Test1234@test.com";
+    UserRole userRole = UserRole.OWNER;
+    String userName = "test";
+    String password = "Test1234!@#$";
+    String phoneNumber = "0101111111";
+    String userAddress = "testaddress";
+
+    String storeName = "맛나식당";
+    String storeNumber = "01011111111";
+    String storeAddress = "한국 어딘가";
+    String registrationNumber = "111-11-11111";
+    Integer minOrederPrice = 1000;
+    String  stringOpeningTime = "7:00:00";
+    Time openingTime = Time.valueOf(stringOpeningTime);
+    String  stringClosingTime = "22:00:00";
+    Time closingTime = Time.valueOf(stringClosingTime);
+    String  stringCurrentTime = "12:11:10";
+    Time currentTime = Time.valueOf(stringCurrentTime);
+
+    String menuName = "맛있는 음식";
+    Integer menuPrice = 2000;
+
+    OrderStatus orderStatus = OrderStatus.of("ORDERED");
+
+    Long userId = 1L;
+    Long storeId = 1L;
+    Long menuId = 1L;
+
+    AuthUser authUser = new AuthUser(userId, email, userRole);
+    User user = new User(email,password,userName,phoneNumber,userAddress,userRole);
+    Store store = new Store(user,storeName,storeNumber,storeAddress,registrationNumber,minOrederPrice,openingTime,closingTime);
+    Menu menu = Menu.menuCreate(menuName, menuPrice, store, user);
+    Order order = new Order(user, store, menu, orderStatus);
+
+    //when
+    Assertions.assertThrows(BusinessException.class,()->{
+      orderService.createOrder(authUser,storeId,menuId);
+    });
+
+
+    //then
+    verify(userRepository,never()).findById(userId);
 
   }
 

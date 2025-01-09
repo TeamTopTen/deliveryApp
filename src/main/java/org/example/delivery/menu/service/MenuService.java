@@ -30,12 +30,12 @@ public class MenuService {
   private final StoreRepository storeRepository;
 
   @Transactional
-  public void createMenu(MenuRequest request, String email) {
+  public void createMenu(MenuRequest request, String email,Long storeId) {
 
     User needCheckUser = userRepository.findUsersByEmail(email)
         .orElseThrow(() -> new NotFoundException(ErrorCode.MENU_NOT_FOUND));
 
-    Store store = storeRepository.findById(request.getStoreId())
+    Store store = storeRepository.findById(storeId)
         .orElseThrow(() -> new NotFoundException(ErrorCode.MENU_NOT_FOUND));
 
     Menu.ownerCheck(needCheckUser);

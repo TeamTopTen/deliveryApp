@@ -64,7 +64,7 @@ public class MenuService {
     Menu menu = Menu.menuPut(checkMenu.getId(),request.getName(), request.getPrice(), checkMenu.getStore(), checkMenu.getUser());
     menuRepository.save(menu);
 
-    return MenuResponse.createMenuResponse(request.getName(),request.getPrice());
+    return MenuResponse.createMenuResponse(menu);
   }
 
   @Transactional

@@ -18,15 +18,15 @@ public class MenuResponse {
     this.price = price;
   }
 
-  static public MenuResponse createMenuResponse(String name, Integer price) {
-    return new MenuResponse(name,price);
+  static public MenuResponse createMenuResponse(Menu menu) {
+    return new MenuResponse(menu.getName(), menu.getPrice());
   }
 
   static public List<MenuResponse> createMenuResponseList(List<Menu> menuList) {
     List<MenuResponse> MenuResponseList = new ArrayList<>();
     int i =0;
     for (  Menu menu:menuList ) {
-      MenuResponseList.add(i,MenuResponse.createMenuResponse(menu.getName(),menu.getPrice()));
+      MenuResponseList.add(i,MenuResponse.createMenuResponse(menu));
       i++;
     }
     return MenuResponseList;

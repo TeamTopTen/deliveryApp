@@ -10,6 +10,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import org.example.delivery.common.exception.ErrorCode;
+import org.example.delivery.common.exception.base.InvalidRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -64,13 +66,13 @@ public class Menu extends BaseEntity {
 
   public static void ownerCheck(User user) { // 1
     if(!(user.getUserRole() == OWNER || user.isDeleted())) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"권한이 없습니다.");
+      throw new InvalidRequestException(ErrorCode.Menu_BAD_REQUEST);
     }
   }
 
   public static void storeCheck(User user, Store store) { // 2
     if(!(store.getUser() == user || user.isDeleted())) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"권한이 없습니다.");
+      throw new InvalidRequestException(ErrorCode.Menu_BAD_REQUEST);
     }
   }
 

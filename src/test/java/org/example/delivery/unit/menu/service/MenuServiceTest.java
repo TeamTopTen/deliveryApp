@@ -1,0 +1,179 @@
+package org.example.delivery.unit.menu.service;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.sql.Time;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import org.example.delivery.auth.model.UserRole;
+import org.example.delivery.auth.repository.UserRepository;
+import org.example.delivery.common.domain.Menu;
+import org.example.delivery.common.domain.Store;
+import org.example.delivery.common.domain.User;
+import org.example.delivery.common.exception.ErrorCode;
+import org.example.delivery.common.exception.base.InvalidRequestException;
+import org.example.delivery.common.exception.base.NotFoundException;
+import org.example.delivery.menu.model.request.MenuRequest;
+import org.example.delivery.menu.repository.MenuRepository;
+import org.example.delivery.menu.service.MenuService;
+import org.example.delivery.store.repository.StoreRepository;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.server.ResponseStatusException;
+
+@ExtendWith(MockitoExtension.class)
+public class MenuServiceTest {
+
+  private  static final int ONE_TIME =1;
+  private  static final int X_TIME =0;
+
+  @InjectMocks
+  MenuService menuService;
+
+  @Mock
+  MenuRepository menuRepository;
+  @Mock
+  UserRepository userRepository;
+  @Mock
+  StoreRepository storeRepository;
+
+  @Test
+  void 메뉴_생성_성공_테스트() {
+    //given
+    MenuRequest request = new MenuRequest("test1@test.com","맛있는 음식",1000);
+
+    String email = "test1@test.com";
+    Long storeId = 1L;
+    User user = new User("test1@test.com", "Test1234!@#$", "test", "0101111111", "testaddress",
+        UserRole.OWNER);
+    Store store = new Store(user,"맛나식당","01011111111","한국 어딘가","111-11-11111",
+        100, Time.valueOf(LocalTime.now()),Time.valueOf(LocalTime.now()));
+
+    Menu menu = Menu.menuCreate("맛있는 음식",1000,store,user);
+    when(menuRepository.save(any(Menu.class))).thenReturn(menu); // 함수가 호출 되었는지 검증
+    when(userRepository.findUsersByEmail(email)).thenReturn(Optional.of(user));
+    when(storeRepository.findById(storeId)).thenReturn(Optional.of(store));
+    //when
+    menuService.createMenu(request,"test1@test.com",storeId);
+
+    // 내가 생성할 때 만들었던 이메일 값 - 데이터 베이스
+    //then
+    verify(menuRepository,times(ONE_TIME)).save(any(Menu.class));
+  }
+
+  @Test
+  void 메뉴_생성_실패_테스트_유저일때() {
+    //given
+    MenuRequest request = new MenuRequest("test1@test.com","맛있는 음식",1000);
+
+    String email = "test1@test.com";
+    Long storeId = 1L;
+    User user = new User("test1@test.com", "Test1234!@#$", "test", "0101111111", "testaddress",
+        UserRole.USER);
+    Store store = new Store(user,"맛나식당","01011111111","한국 어딘가","111-11-11111",
+        100, Time.valueOf(LocalTime.now()),Time.valueOf(LocalTime.now()));
+
+    Menu menu = Menu.menuCreate("맛있는 음식",1000,store,user);
+    //when(menuRepository.save(any(Menu.class))).thenReturn(menu); // 함수가 호출 되었는지 검증
+    when(userRepository.findUsersByEmail(email)).thenReturn(Optional.of(user));
+    when(storeRepository.findById(storeId)).thenReturn(Optional.of(store));
+    //when
+    //menuService.createMenu(request,email,storeId);
+
+    // 내가 생성할 때 만들었던 이메일 값 - 데이터 베이스
+    //then
+//throw - 정확한 에러 , 메세지 검증
+    Assertions.assertThrows(InvalidRequestException.class,() -> {
+      menuService.createMenu(request,email,storeId);
+    });
+    verify(menuRepository, never()).save(any(Menu.class));
+//    Assertions.assertFalse(user.getUserRole().equals(UserRole.OWNER));
+//    verify(userRepository,times(ONE_TIME)).findUsersByEmail(email);
+//    verify(storeRepository,times(ONE_TIME)).findById(storeId);
+//    verify(menuRepository,times(X_TIME)).save(menu);
+  }
+
+  @Test
+  void 메뉴_생성_실패_테스트_자신의_가게가_아닐때() {
+    //given
+    MenuRequest request = new MenuRequest("test1@test.com","맛있는 음식",1000);
+
+    String email = "test1@test.com";
+    Long storeId = 2L;
+    User user = new User("test1@test.com", "Test1234!@#$", "test", "0101111111", "testaddress",
+        UserRole.OWNER);
+    User testuser = new User("test12@test.com", "Test1234!@#$", "test", "0101111111", "testaddress",
+        UserRole.OWNER);
+    Store store = new Store(testuser,"맛나식당","01011111111","한국 어딘가","111-11-11111",
+        100, Time.valueOf(LocalTime.now()),Time.valueOf(LocalTime.now()));
+
+    Menu menu = Menu.menuCreate("맛있는 음식",1000,store,user);
+
+    when(userRepository.findUsersByEmail(email)).thenReturn(Optional.of(user));
+    when(storeRepository.findById(storeId)).thenReturn(Optional.of(store));
+
+    //when&then
+    InvalidRequestException invalidRequestException = Assertions.assertThrows(
+        InvalidRequestException.class, () -> {
+          menuService.createMenu(request, email, storeId);
+        });
+    Assertions.assertEquals(ErrorCode.Menu_BAD_REQUEST.getMessage(),invalidRequestException.getMessage());
+    verify(menuRepository,never()).save(menu);
+  }
+
+  @Test
+  void 메뉴_조회_성공_테스트() {
+    //given
+    Long storeId = 1L;
+    User user = new User("test1@test.com", "Test1234!@#$", "test", "0101111111", "testaddress",
+        UserRole.OWNER);
+    Store store = new Store(user,"맛나식당","01011111111","한국 어딘가","111-11-11111",
+        100, Time.valueOf(LocalTime.now()),Time.valueOf(LocalTime.now()));
+
+    Menu menu = Menu.menuCreate("맛있는 음식",1000,store,user);
+    List<Menu> findMenuList = new ArrayList<>();
+    findMenuList.add(menu);
+
+    when(storeRepository.findById(storeId)).thenReturn(Optional.of(store));
+    when(menuRepository.findByStore_IdAndIsDeleted(storeId,false)).thenReturn(findMenuList);
+
+    //when
+    menuService.findMenu(storeId);
+    //then
+    org.assertj.core.api.Assertions.assertThat(menu.getId()).isEqualTo(findMenuList.get(0).getId());
+  }
+
+  @Test
+  void 메뉴_조회_실패_테스트() {
+    //given
+    Long storeId = 2L;
+    User user = new User("test1@test.com", "Test1234!@#$", "test", "0101111111", "testaddress",
+        UserRole.OWNER);
+    Store store = new Store(user,"맛나식당","01011111111","한국 어딘가","111-11-11111",
+        100, Time.valueOf(LocalTime.now()),Time.valueOf(LocalTime.now()));
+    Store teststore = null;
+    Menu menu = Menu.menuCreate("맛있는 음식",1000,store,user);
+    List<Menu> findMenuList = new ArrayList<>();
+    findMenuList.add(menu);
+
+    when(storeRepository.findById(storeId)).thenReturn(Optional.of(teststore));
+    when(menuRepository.findByStore_IdAndIsDeleted(storeId,false)).thenReturn(findMenuList);
+
+    //when&then
+    NotFoundException notFoundException = Assertions.assertThrows(NotFoundException.class, () -> {
+      menuService.findMenu(storeId);
+    });
+    org.assertj.core.api.Assertions.assertThat(menu.getStore().getId()).isNotEqualTo(storeId);
+    Assertions.assertEquals(ErrorCode.MENU_NOT_FOUND,notFoundException.getMessage());
+  }
+}

@@ -49,6 +49,9 @@ public class MenuService {
   @Transactional
   public List<MenuResponse> findMenu(Long storeId) {
 
+    Store store = storeRepository.findById(storeId)
+        .orElseThrow(() -> new NotFoundException(ErrorCode.MENU_NOT_FOUND));
+
     List<Menu> findMenuList = menuRepository.findByStore_IdAndIsDeleted(storeId,false);
 
     return MenuResponse.createMenuResponseList(findMenuList);

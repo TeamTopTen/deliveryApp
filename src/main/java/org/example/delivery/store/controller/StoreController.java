@@ -31,11 +31,11 @@ public class StoreController {
 
 
   @PostMapping("/owners")
-  public ResponseEntity<StoreResponse> createStoreAPI(
+  public ResponseEntity<StoreResponse> registerStoreAPI(
       @Auth AuthUser authUser,
       @RequestBody StoreRequest request) {
 
-    StoreResponse response = storeService.createStore(authUser, request);
+    StoreResponse response = storeService.registerStore(authUser, request);
 
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }

@@ -29,7 +29,8 @@ public class StoreService {
   private UserRepository userRepository;
   private MenuRepository menuRepository;
 
-  public StoreResponse createStore(AuthUser authUser, StoreRequest request) {
+
+  public StoreResponse registerStore(AuthUser authUser, StoreRequest request) {
 
     validateStoreLimit(authUser.id());
     validateStoreRequest(request);

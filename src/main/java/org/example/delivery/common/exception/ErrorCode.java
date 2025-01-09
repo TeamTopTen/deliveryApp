@@ -40,7 +40,8 @@ public enum ErrorCode {
   //Order
   ORDER_ACCESS_DENIED(HttpStatus.FORBIDDEN, "O403", "주문은 유저만 등록/삭제 할 수 있습니다."),
   ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "O404", "존재하지 않는 주문입니다."),
-
+  ORDER_MIN_PRICE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "B400", "가게에서 설정한 최소 주문 금액을 만족해야 주문이 가능합니다."),
+  ORDER_TIME_BAD_REQUEST(HttpStatus.BAD_REQUEST, "B400", "가게의 오픈/마감 시간이 지나면 주문할 수 없습니다."),
 
   //Review
 

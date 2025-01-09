@@ -1,5 +1,7 @@
 package org.example.delivery.order.service;
 
+import java.sql.Time;
+import java.time.LocalTime;
 import lombok.RequiredArgsConstructor;
 import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.auth.repository.UserRepository;
@@ -49,8 +51,17 @@ public class OrderService {
     Store store = storeRepository.findById(storeId).orElseThrow(() ->
         new BusinessException(ErrorCode.STORE_NOT_FOUND));
 
+    if (LocalTime.now().isBefore(store.getOpeningTime().toLocalTime()) ||
+        LocalTime.now().isAfter(store.getClosingTime().toLocalTime())) {
+      throw new BusinessException(ErrorCode.ORDER_TIME_BAD_REQUEST);
+    }
+
     Menu menu = menuRepository.findById(menuId).orElseThrow(() ->
         new BusinessException(ErrorCode.MENU_NOT_FOUND));
+
+    if (menu.getPrice() < store.getMinOrderPrice()){
+      throw new BusinessException(ErrorCode.ORDER_MIN_PRICE_BAD_REQUEST);
+    }
 
     OrderStatus orderStatus = OrderStatus.of("ORDERED");
 

@@ -222,7 +222,33 @@ public class MenuServiceTest {
 
   }
 
+  @Test
+  public void 메뉴_수정_실패_CASE_menuId가_조회가_안될때() {
+    MenuRequest request = new MenuRequest("test1@test.com","수정된 맛있는 음식",2000);
+    Long menuId = 1L;
+    Long testmenuId = 2L;
+    String email = "test1@test.com";
+    User user = new User("test1@test.com", "Test1234!@#$", "test", "0101111111", "testaddress",
+        UserRole.OWNER);
+    Store store = new Store(user,"맛나식당","01011111111","한국 어딘가","111-11-11111",
+        100, Time.valueOf(LocalTime.now()),Time.valueOf(LocalTime.now()));
+    Menu menu = Menu.menuCreateWithTestCode(menuId,"맛있는 음식",1000,store,user,false);
+
+    when(menuRepository.findByIdOrElseThrow(testmenuId)).thenThrow(new NotFoundException(ErrorCode.MENU_NOT_FOUND));
+
+    //when
+    NotFoundException notFoundException = Assertions.assertThrows(NotFoundException.class, () -> {
+          menuService.putMenu(testmenuId, request, email);
+        });
+
+
+    //then
+    org.assertj.core.api.Assertions.assertThat(testmenuId).isNotEqualTo(menu.getId());
+    Assertions.assertEquals(ErrorCode.MENU_NOT_FOUND.getMessage(),notFoundException.getMessage());
+  }
 }
+
+
 //Menu menu = Menu.menuCreate("맛있는 음식",1000,store,user);
 //when(menuRepository.save(any(Menu.class))).thenReturn(menu); // 함수가 호출 되었는지 검증
 //when(userRepository.findUsersByEmail(email)).thenReturn(Optional.of(user));

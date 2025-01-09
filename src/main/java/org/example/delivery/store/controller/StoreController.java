@@ -73,14 +73,4 @@ public class StoreController {
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
-  @PatchMapping("/{store_id}/owners/reopen")
-  public ResponseEntity<Void> reopenStore(
-      @PathVariable(name = "store_id") Long storeId,
-      @Auth AuthUser authUser) {
-
-    storeService.reOpenStore(authUser, storeId);
-
-    return new ResponseEntity<>(HttpStatus.OK);
-  }
-
 }

@@ -56,7 +56,7 @@ public class StoreService {
 
   public List<GetStoresResponse> getAllStores() {
 
-    return storeRepository.findAllByDeletedFalse()
+    return storeRepository.findAllByIsDeletedFalse()
         .stream()
         .map(GetStoresResponse::toDto)
         .toList();
@@ -85,16 +85,8 @@ public class StoreService {
     storeRepository.save(foundstore);
   }
 
-  public void reOpenStore(AuthUser authUser, Long storeId) {
-    validateStoreLimit(authUser.id());
-    Store foundStore = storeRepository.findById(storeId)
-        .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
-
-    foundStore.reOpenStore();
-  }
-
   private void validateStoreLimit(Long userId) {
-    if (storeRepository.countStoreByUserIdAndDeletedFalse(userId) >= 3) {
+    if (storeRepository.countStoreByUserIdAndIsDeletedFalse(userId) >= 3) {
       throw new BusinessException(ErrorCode.TOO_MANY_STORES);
     }
   }

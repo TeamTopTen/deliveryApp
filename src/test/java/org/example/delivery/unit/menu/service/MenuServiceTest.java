@@ -154,7 +154,7 @@ public class MenuServiceTest {
   }
 
   @Test
-  void 메뉴_조회_실패_테스트() {
+  void 메뉴_조회_실패_가게_정보가_없을때_테스트() {
     //given
     Long storeId = 2L;
     User user = new User("test1@test.com", "Test1234!@#$", "test", "0101111111", "testaddress",
@@ -166,14 +166,17 @@ public class MenuServiceTest {
     List<Menu> findMenuList = new ArrayList<>();
     findMenuList.add(menu);
 
-    when(storeRepository.findById(storeId)).thenReturn(Optional.of(teststore));
-    when(menuRepository.findByStore_IdAndIsDeleted(storeId,false)).thenReturn(findMenuList);
+    when(storeRepository.findById(storeId)).thenReturn(Optional.ofNullable(teststore));
 
     //when&then
     NotFoundException notFoundException = Assertions.assertThrows(NotFoundException.class, () -> {
       menuService.findMenu(storeId);
     });
-    org.assertj.core.api.Assertions.assertThat(menu.getStore().getId()).isNotEqualTo(storeId);
-    Assertions.assertEquals(ErrorCode.MENU_NOT_FOUND,notFoundException.getMessage());
+    org.assertj.core.api.Assertions.assertThat(menu.getStore().getId()).isNotEqualTo(storeId); // isNotEqualTo 널 값일때 받기 위해
+    Assertions.assertEquals(ErrorCode.MENU_NOT_FOUND.getMessage(),notFoundException.getMessage());
+    verify(menuRepository,never()).findByStore_IdAndIsDeleted(storeId,false);
   }
+
+
+
 }

@@ -1,5 +1,6 @@
 package org.example.delivery.review.model.dto;
 
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,4 +15,6 @@ public class ReviewPageDto {
   private Integer menuPrice;
   private ReviewStar reviewStar;
   private String content;
+  private LocalDateTime createdAt;
+  private LocalDateTime updatedAt;
 }

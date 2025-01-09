@@ -17,11 +17,13 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
           "r.order.menu.name, " +
           "r.order.menu.price, " +
           "r.reviewStar, " +
-          "r.content" +
+          "r.content, " +
+          "r.createdAt, " +
+          "r.updatedAt" +
           ") " +
           "FROM Review r " +
           "WHERE r.order.store.id = :storeId "+
-          "ORDER BY r.createdAt DESC"
+          "ORDER BY r.updatedAt DESC"
   )
   Page<ReviewPageDto> findReviewsByStoreId(@Param("storeId") Long storeId, Pageable pageable);
 }

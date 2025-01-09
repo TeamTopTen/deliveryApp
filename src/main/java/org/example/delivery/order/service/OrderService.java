@@ -128,5 +128,6 @@ public class OrderService {
     Order order = orderRepository.findOrderByUserIdAndOrderIdOrElseThrow(userId, orderId);
 
     order.changeOrderStatus(OrderStatus.of("CANCELLED"));
+
   }
 }

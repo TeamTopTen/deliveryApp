@@ -6,10 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StoreRepository extends JpaRepository<Store, Long> {
 
-  long countStoreByUserIdAndDeletedFalse(long userId);
+  long countStoreByUserIdAndIsDeletedFalse(long userId);
 
   boolean existsStoreByName(String name);
   boolean existsStoreByStoreAddress(String address);
-  List<Store> findAllByDeletedFalse();
+  List<Store> findAllByIsDeletedFalse();
 
 }

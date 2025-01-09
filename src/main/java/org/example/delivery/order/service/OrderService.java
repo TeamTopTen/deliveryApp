@@ -120,7 +120,10 @@ public class OrderService {
     }
 
     Order order = orderRepository.findOrderByUserIdAndOrderIdOrElseThrow(userId, orderId);
+
     order.changeOrderStatus(status);
+
+    orderRepository.save(order);
   }
 
   @Transactional
@@ -140,5 +143,6 @@ public class OrderService {
 
     order.changeOrderStatus(OrderStatus.of("CANCELLED"));
 
+    orderRepository.save(order);
   }
 }

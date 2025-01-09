@@ -23,29 +23,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class OrderStatusChangeLoggingAspect {
 
-  @Pointcut("execution(* org.example.delivery.order.service.OrderService.createOrder(..)) || " +
-      "execution(* org.example.delivery.order.service.OrderService.updateOrderStatus(..)) || " +
-      "execution(* org.example.delivery.order.service.OrderService.softDeleteOrder(..))")
-  public void orderServiceMethods() {}
+  // @Pointcut 설정 - OrderService의 메서드에서 orderRepository.save() 호출 시
+  @Pointcut("execution(* org.example.delivery.order.repository.OrderRepository.save(..)) && args(order)")
+  public void saveOrderMethod(Order order) {}
 
-  @After("orderServiceMethods() && args(authUser, storeId, orderId, ..)")
-  public void logOrderRequest(AuthUser authUser, Long storeId, Long orderId) {
-    String userRole = authUser.userRole().getUserRole();
-    String action = "";
-
-    if (orderId != null) {
-      if (userRole.equals("owner")) {
-        action = "주문 상태 변경";
-      } else {
-        action = "주문 요청";
-      }
-    }
-
+  // @Before 어노테이션을 사용하여 save 메서드 호출 직전에 order 로그 남기기
+  @After("saveOrderMethod(order)")
+  public void logAfterOrderSave(Order order) {
     log.info("[" + LocalDateTime.now() + "] " +
-        "Action: " + action + " | " +
-        "UserRole: " + userRole + " | " +
-        "StoreId: " + storeId + " | " +
-        "OrderId: " + orderId);
+        "OrderStatus: " + order.getOrderStatus() + " | " +
+        "OrderId: " + order.getId() + " | " +
+        "StoreId: " + order.getStore().getId() + " | " +
+        "MenuId: " + order.getMenu().getId() + " | " +
+        "UserId: " + order.getUser().getId());
   }
-
 }

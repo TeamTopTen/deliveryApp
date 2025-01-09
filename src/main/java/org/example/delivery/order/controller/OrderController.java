@@ -65,7 +65,6 @@ public class OrderController {
         HttpStatus.OK);
   }
 
-
   @PatchMapping("/orders/{orderId}")
   public ResponseEntity<String> updateOrderStatus(
       @Auth AuthUser authUser,

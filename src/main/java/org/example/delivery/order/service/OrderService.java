@@ -1,6 +1,5 @@
 package org.example.delivery.order.service;
 
-import java.sql.Time;
 import java.time.LocalTime;
 import lombok.RequiredArgsConstructor;
 import org.example.delivery.auth.model.dto.AuthUser;
@@ -75,7 +74,6 @@ public class OrderService {
 
     Long userId = authUser.id();
     String userRole = authUser.userRole().getUserRole();
-    // 로그인 한사람이 owner이면
 
     if (userRole.equals("owner")) {
       return orderRepository.findOrdersByStoreUserId(userId, pageable);

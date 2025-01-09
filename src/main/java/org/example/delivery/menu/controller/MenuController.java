@@ -9,7 +9,6 @@ import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.menu.model.request.MenuRequest;
 import org.example.delivery.menu.model.response.MenuResponse;
 import org.example.delivery.menu.service.MenuService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.example.delivery.auth.Annotation.Auth;
-import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("api/stores/{store_id}/menus")
@@ -34,11 +32,6 @@ public class MenuController {
   public ResponseEntity<String> createMenu(@Valid @RequestBody MenuRequest request,
       @PathVariable("store_id") Long storeId,
       @Auth AuthUser authUser) {
-
-
-    if(!authUser.email().equals(request.getEmail())) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-    }
 
     menuService.createMenu(request, authUser.email(),storeId);
     return ResponseEntity.ok().body("메뉴가 정상적으로 생성되었습니다.");
@@ -55,10 +48,6 @@ public class MenuController {
       @PathVariable("store_id") Long storeId, //
       @Valid @RequestBody MenuRequest request,
       @Auth AuthUser authUser) {
-
-//    if(!authUser.email().equals(request.getEmail())) {
-//      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-//    }
 
     return ResponseEntity.ok().body(menuService.putMenu(menuId,request,authUser.email()));
   }

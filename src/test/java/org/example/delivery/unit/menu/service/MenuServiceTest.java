@@ -349,15 +349,3 @@ public class MenuServiceTest {
   }
 
 }
-
-
-//Menu menu = Menu.menuCreate("맛있는 음식",1000,store,user);
-//when(menuRepository.save(any(Menu.class))).thenReturn(menu); // 함수가 호출 되었는지 검증
-//when(userRepository.findUsersByEmail(email)).thenReturn(Optional.of(user));
-//when(storeRepository.findById(storeId)).thenReturn(Optional.of(store));
-//    //when
-//    menuService.createMenu(request,"test1@test.com",storeId);
-//
-//// 내가 생성할 때 만들었던 이메일 값 - 데이터 베이스
-////then
-//verify(menuRepository,times(ONE_TIME)).save(any(Menu.class));

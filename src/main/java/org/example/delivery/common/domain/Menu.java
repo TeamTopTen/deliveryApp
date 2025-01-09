@@ -44,7 +44,16 @@ public class Menu extends BaseEntity {
     this.user = user;
   }
 
-  public Menu(Long id, String name, Integer price, Store store,User user) {
+  private Menu(Long id, String name, Integer price, Store store,User user,Boolean isDeleted) {
+    this.id = id;
+    this.name = name;
+    this.price = price;
+    this.user = user;
+    this.store = store;
+    this.isDeleted = isDeleted;
+  }
+
+  private Menu(Long id, String name, Integer price, Store store,User user ) {
     this.id = id;
     this.name = name;
     this.price = price;
@@ -55,7 +64,9 @@ public class Menu extends BaseEntity {
   public Menu() {
 
   }
-
+  public static Menu menuCreateWithTestCode(Long id,String name,Integer price,Store store,User user,boolean isDeleted) {
+    return new Menu(id,name,price,store,user,isDeleted);
+  }
   public static Menu menuCreate(String name,Integer price,Store store,User user) {
     return new Menu(name,price,store,user);
   }

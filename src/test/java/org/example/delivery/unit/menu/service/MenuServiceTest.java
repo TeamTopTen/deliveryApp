@@ -1,6 +1,8 @@
 package org.example.delivery.unit.menu.service;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -20,6 +22,7 @@ import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.InvalidRequestException;
 import org.example.delivery.common.exception.base.NotFoundException;
 import org.example.delivery.menu.model.request.MenuRequest;
+import org.example.delivery.menu.model.response.MenuResponse;
 import org.example.delivery.menu.repository.MenuRepository;
 import org.example.delivery.menu.service.MenuService;
 import org.example.delivery.store.repository.StoreRepository;
@@ -177,6 +180,56 @@ public class MenuServiceTest {
     verify(menuRepository,never()).findByStore_IdAndIsDeleted(storeId,false);
   }
 
+  @Test
+  public void 메뉴_수정_성공_테스트() {
+    //given
+    MenuRequest request = new MenuRequest("test1@test.com","수정된 맛있는 음식",2000);
+    Long menuId = 1L;
+    String email = "test1@test.com";
+    User user = new User("test1@test.com", "Test1234!@#$", "test", "0101111111", "testaddress",
+        UserRole.OWNER);
+    Store store = new Store(user,"맛나식당","01011111111","한국 어딘가","111-11-11111",
+        100, Time.valueOf(LocalTime.now()),Time.valueOf(LocalTime.now()));
+    Menu menu = Menu.menuCreateWithTestCode(menuId,"맛있는 음식",1000,store,user,false);
+    Menu testMenu = Menu.menuCreateWithTestCode(menuId,"수정된 맛있는 음식",2000,store,user,false);
 
+    MenuResponse menuResponse = MenuResponse.createMenuResponse(testMenu);
+
+    when(menuRepository.findByIdOrElseThrow(menuId)).thenReturn(menu);
+
+    doAnswer(invocation -> {
+      Long id = invocation.getArgument(0);
+      if (menu.getIsDeleted()) {
+        throw new NotFoundException(ErrorCode.MENU_NOT_FOUND);
+      }
+      return null;
+    }).when(menuRepository).checkDeleteById(menuId);
+//  2.  doThrow(new NotFoundException(ErrorCode.MENU_NOT_FOUND))
+//        .when(menuRepository).checkDeleteById(menuId);
+    //1. when(menuRepository.checkDeleteById(menuId)).thenThrow(NotFoundException.class);
+
+    when(menuRepository.save(any(Menu.class))).thenReturn(testMenu);
+    when(userRepository.findUsersByEmail(email)).thenReturn(Optional.of(user));
+
+
+
+    //when
+    menuService.putMenu(menuId,request,email);
+    //then
+    verify(menuRepository,times(ONE_TIME)).save(any(Menu.class));
+    org.assertj.core.api.Assertions.assertThat(menuResponse.getName()).isEqualTo(request.getName());
+    org.assertj.core.api.Assertions.assertThat(menuResponse.getPrice()).isEqualTo(request.getPrice());
+
+  }
 
 }
+//Menu menu = Menu.menuCreate("맛있는 음식",1000,store,user);
+//when(menuRepository.save(any(Menu.class))).thenReturn(menu); // 함수가 호출 되었는지 검증
+//when(userRepository.findUsersByEmail(email)).thenReturn(Optional.of(user));
+//when(storeRepository.findById(storeId)).thenReturn(Optional.of(store));
+//    //when
+//    menuService.createMenu(request,"test1@test.com",storeId);
+//
+//// 내가 생성할 때 만들었던 이메일 값 - 데이터 베이스
+////then
+//verify(menuRepository,times(ONE_TIME)).save(any(Menu.class));

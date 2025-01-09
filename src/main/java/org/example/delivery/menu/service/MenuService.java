@@ -52,7 +52,7 @@ public class MenuService {
     Store store = storeRepository.findById(storeId)
         .orElseThrow(() -> new NotFoundException(ErrorCode.MENU_NOT_FOUND));
 
-    List<Menu> findMenuList = menuRepository.trueFindByStore_IdAndIsDeleted(storeId,false);
+    List<Menu> findMenuList = menuRepository.findByStore_IdAndIsDeleted(storeId,false);
 
     return MenuResponse.createMenuResponseList(findMenuList);
   }

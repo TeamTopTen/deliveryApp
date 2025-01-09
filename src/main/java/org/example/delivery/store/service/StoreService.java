@@ -1,6 +1,5 @@
 package org.example.delivery.store.service;
 
-import java.lang.module.InvalidModuleDescriptorException;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +8,8 @@ import org.example.delivery.auth.repository.UserRepository;
 import org.example.delivery.common.domain.Store;
 import org.example.delivery.common.domain.User;
 import org.example.delivery.common.exception.ErrorCode;
+import org.example.delivery.common.exception.base.BusinessException;
+import org.example.delivery.common.exception.base.ConflictException;
 import org.example.delivery.common.exception.base.NotFoundException;
 import org.example.delivery.menu.model.response.MenuResponse;
 import org.example.delivery.menu.repository.MenuRepository;
@@ -30,9 +31,8 @@ public class StoreService {
 
   public StoreResponse createStore(AuthUser authUser, StoreRequest request) {
 
-    if (storeRepository.countStoreByUserId(authUser.id()) >= 3) {
-      throw new InvalidModuleDescriptorException(ErrorCode.TOO_MANY_STORES.getCode());
-    }
+    validateStoreLimit(authUser.id());
+    validateStoreRequest(request);
 
     User foundUser = userRepository.findById(authUser.id())
         .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
@@ -65,11 +65,12 @@ public class StoreService {
 
   public StoreResponse updateStore(Long storeId, StoreRequest request) {
 
+    validateStoreRequest(request);
+
     Store foundStore = storeRepository.findById(storeId)
         .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
     foundStore.updateWith(request);
-
     storeRepository.save(foundStore);
 
     return new StoreResponse("수정이 정상적으로 완료되었습니다.");
@@ -82,5 +83,28 @@ public class StoreService {
 
     foundstore.softDelete();
     storeRepository.save(foundstore);
+  }
+
+  public void reOpenStore(AuthUser authUser, Long storeId) {
+    validateStoreLimit(authUser.id());
+    Store foundStore = storeRepository.findById(storeId)
+        .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
+
+    foundStore.reOpenStore();
+  }
+
+  private void validateStoreLimit(Long userId) {
+    if (storeRepository.countStoreByUserIdAndDeletedFalse(userId) >= 3) {
+      throw new BusinessException(ErrorCode.TOO_MANY_STORES);
+    }
+  }
+
+
+  private void validateStoreRequest(StoreRequest request) {
+    if (storeRepository.existsStoreByName(request.name())) {
+      throw new ConflictException(ErrorCode.STORE_NAME_ALREADY_EXISTS);
+    } else if (storeRepository.existsStoreByStoreAddress(request.storeAddress())) {
+      throw new ConflictException(ErrorCode.STORE_ADDRESS_ALREADY_EXISTS);
+    }
   }
 }

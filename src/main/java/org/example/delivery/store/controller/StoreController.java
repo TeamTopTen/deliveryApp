@@ -66,12 +66,21 @@ public class StoreController {
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
 
-
   @PatchMapping("/{store_id}/owners")
   public ResponseEntity<Void> deleteStore(@PathVariable(name = "store_id") Long storeId) {
     storeService.deleteStore(storeId);
 
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  }
+
+  @PatchMapping("/{store_id}/owners/reopen")
+  public ResponseEntity<Void> reopenStore(
+      @PathVariable(name = "store_id") Long storeId,
+      @Auth AuthUser authUser) {
+
+    storeService.reOpenStore(authUser, storeId);
+
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 
 }

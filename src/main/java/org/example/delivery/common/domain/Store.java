@@ -83,4 +83,8 @@ public class Store extends BaseEntity{
   public void softDelete () {
     this.isDeleted = true;
   }
+
+  public void reOpenStore(){
+    this.isDeleted = false;
+  }
 }

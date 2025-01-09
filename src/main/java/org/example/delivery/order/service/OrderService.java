@@ -1,5 +1,6 @@
 package org.example.delivery.order.service;
 
+import java.time.LocalTime;
 import lombok.RequiredArgsConstructor;
 import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.auth.repository.UserRepository;
@@ -49,8 +50,17 @@ public class OrderService {
     Store store = storeRepository.findById(storeId).orElseThrow(() ->
         new BusinessException(ErrorCode.STORE_NOT_FOUND));
 
+    if (LocalTime.now().isBefore(store.getOpeningTime().toLocalTime()) ||
+        LocalTime.now().isAfter(store.getClosingTime().toLocalTime())) {
+      throw new BusinessException(ErrorCode.ORDER_TIME_BAD_REQUEST);
+    }
+
     Menu menu = menuRepository.findById(menuId).orElseThrow(() ->
         new BusinessException(ErrorCode.MENU_NOT_FOUND));
+
+    if (menu.getPrice() < store.getMinOrderPrice()){
+      throw new BusinessException(ErrorCode.ORDER_MIN_PRICE_BAD_REQUEST);
+    }
 
     OrderStatus orderStatus = OrderStatus.of("ORDERED");
 
@@ -64,7 +74,6 @@ public class OrderService {
 
     Long userId = authUser.id();
     String userRole = authUser.userRole().getUserRole();
-    // 로그인 한사람이 owner이면
 
     if (userRole.equals("owner")) {
       return orderRepository.findOrdersByStoreUserId(userId, pageable);
@@ -109,7 +118,10 @@ public class OrderService {
     }
 
     Order order = orderRepository.findOrderByUserIdAndOrderIdOrElseThrow(userId, orderId);
+
     order.changeOrderStatus(status);
+
+    orderRepository.save(order);
   }
 
   @Transactional
@@ -128,5 +140,7 @@ public class OrderService {
     Order order = orderRepository.findOrderByUserIdAndOrderIdOrElseThrow(userId, orderId);
 
     order.changeOrderStatus(OrderStatus.of("CANCELLED"));
+
+    orderRepository.save(order);
   }
 }

@@ -64,4 +64,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             new BusinessException(ErrorCode.ORDER_NOT_FOUND));
   }
 
+
+  default Order findByIdOrThrow(Long orderId) {
+    return findById(orderId)
+        .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
+  }
 }

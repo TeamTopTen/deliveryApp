@@ -246,6 +246,39 @@ public class MenuServiceTest {
     org.assertj.core.api.Assertions.assertThat(testmenuId).isNotEqualTo(menu.getId());
     Assertions.assertEquals(ErrorCode.MENU_NOT_FOUND.getMessage(),notFoundException.getMessage());
   }
+
+  @Test
+  public void 메뉴_수정_실패_CASE_메뉴가_softDelete_상태일때() {
+    MenuRequest request = new MenuRequest("test1@test.com","수정된 맛있는 음식",2000);
+    Long menuId = 1L;
+    String email = "test1@test.com";
+    User user = new User("test1@test.com", "Test1234!@#$", "test", "0101111111", "testaddress",
+        UserRole.OWNER);
+    Store store = new Store(user,"맛나식당","01011111111","한국 어딘가","111-11-11111",
+        100, Time.valueOf(LocalTime.now()),Time.valueOf(LocalTime.now()));
+    Menu menu = Menu.menuCreateWithTestCode(menuId,"맛있는 음식",1000,store,user,true);
+
+    when(menuRepository.findByIdOrElseThrow(menuId)).thenReturn(menu);
+
+    doAnswer(invocation -> {
+      Long id = invocation.getArgument(0);
+      if(menu.getIsDeleted()) {
+        throw new NotFoundException(ErrorCode.MENU_NOT_FOUND);
+      }
+      return null;
+        }).when(menuRepository).checkDeleteById(menuId);
+
+    //when
+    NotFoundException notFoundException = Assertions.assertThrows(NotFoundException.class, () -> {
+      menuService.putMenu(menuId, request, email);
+    });
+
+
+    //then
+    verify(menuRepository,times(ONE_TIME)).checkDeleteById(menuId);
+    verify(menuRepository,never()).save(menu);
+    Assertions.assertEquals(ErrorCode.MENU_NOT_FOUND.getMessage(),notFoundException.getMessage());
+  }
 }
 
 

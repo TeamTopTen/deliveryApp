@@ -43,9 +43,7 @@ public enum ErrorCode {
 
 
   //Review
-  REVIEW_REQUEST(HttpStatus.BAD_REQUEST, "R400", "한 주문에 하나의 리뷰 작성만 가능합니다."),
-  REVIEW_ACCESS_DENIED(HttpStatus.FORBIDDEN, "R403", "주문한 음식만 리뷰를 작성할 수 있습니다."),
-  REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "R404", "일치하는 주문이 없습니다."),
+
 
 
   //Store

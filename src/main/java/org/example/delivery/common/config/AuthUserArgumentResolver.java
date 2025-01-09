@@ -23,7 +23,6 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
     if (hasAuthAnnotation != isAuthUserType) {
       throw new AuthException(ErrorCode.AUTHENTICATION_FAILED);
     }
-
     return hasAuthAnnotation;
   }
 
@@ -42,5 +41,4 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
     return new AuthUser(userId, email, userRole);
   }
-
 }

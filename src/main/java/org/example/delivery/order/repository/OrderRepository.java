@@ -47,7 +47,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
   default Order findOrderByStoreUserIdAndOrderIdOrElseThrow(Long storeUserId, Long orderId) {
     return findOrderByStoreUserIdAndOrderId(storeUserId,orderId)
         .orElseThrow(() ->
-            new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
+            new BusinessException(ErrorCode.ORDER_NOT_FOUND));
   }
 
 
@@ -61,7 +61,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
   default Order findOrderByUserIdAndOrderIdOrElseThrow(Long userId, Long orderId) {
     return findOrderByUserIdAndOrderId(userId,orderId)
         .orElseThrow(() ->
-            new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
+            new BusinessException(ErrorCode.ORDER_NOT_FOUND));
   }
 
 }

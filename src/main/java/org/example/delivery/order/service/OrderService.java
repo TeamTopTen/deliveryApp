@@ -40,17 +40,17 @@ public class OrderService {
     Long userId = authUser.id();
 
     if (userRole.equals("owner")) {
-      throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+      throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED); // user만 등록가능
     }
 
     User user = userRepository.findById(userId).orElseThrow(() ->
-        new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
+        new BusinessException(ErrorCode.USER_NOT_FOUND));
 
     Store store = storeRepository.findById(storeId).orElseThrow(() ->
-        new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
+        new BusinessException(ErrorCode.STORE_NOT_FOUND));
 
     Menu menu = menuRepository.findById(menuId).orElseThrow(() ->
-        new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
+        new BusinessException(ErrorCode.MENU_NOT_FOUND));
 
     OrderStatus orderStatus = OrderStatus.of("ORDERED");
 
@@ -86,6 +86,7 @@ public class OrderService {
       Order order = orderRepository.findOrderByStoreUserIdAndOrderIdOrElseThrow(userId, orderId);
       return new OrderDto(order);
     }
+
     Order order = orderRepository.findOrderByUserIdAndOrderIdOrElseThrow(userId, orderId);
     return new OrderDto(order);
   }
@@ -121,7 +122,7 @@ public class OrderService {
     String userRole = authUser.userRole().getUserRole();
 
     if (userRole.equals("owner")) {
-      throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+      throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED);
     }
 
     Order order = orderRepository.findOrderByUserIdAndOrderIdOrElseThrow(userId, orderId);

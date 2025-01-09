@@ -9,7 +9,7 @@ import lombok.Getter;
 public class ReviewCreateRequest {
 
   @NotNull(message = "reviewStar is required")
-  private Integer reviewStar;
+  private String reviewStar;
 
   @NotNull(message = "content is required")
   private String content;

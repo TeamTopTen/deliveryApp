@@ -1,6 +1,5 @@
 package org.example.delivery.order.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.delivery.auth.Annotation.Auth;

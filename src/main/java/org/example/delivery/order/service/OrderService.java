@@ -1,10 +1,8 @@
 package org.example.delivery.order.service;
 
-import java.util.Objects;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.example.delivery.auth.model.UserRole;
 import org.example.delivery.auth.model.dto.AuthUser;
+import org.example.delivery.auth.repository.UserRepository;
 import org.example.delivery.common.domain.Menu;
 import org.example.delivery.common.domain.Order;
 import org.example.delivery.common.domain.OrderStatus;
@@ -19,7 +17,6 @@ import org.example.delivery.order.model.request.OrderCreateRequest;
 import org.example.delivery.order.model.request.OrderUpdateRequest;
 import org.example.delivery.order.repository.OrderRepository;
 import org.example.delivery.store.repository.StoreRepository;
-import org.example.delivery.auth.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -31,6 +28,7 @@ public class OrderService {
 
   private final UserRepository userRepository;
   private final StoreRepository storeRepository;
+  private final MenuRepository menuRepository;
   private final OrderRepository orderRepository;
 
   @Transactional
@@ -40,10 +38,10 @@ public class OrderService {
       Long menuId,
       OrderCreateRequest request) {
 
-    String userRole =  authUser.userRole().getUserRole();
+    String userRole = authUser.userRole().getUserRole();
     Long userId = authUser.id();
 
-    if (userRole.equals("owner")){
+    if (userRole.equals("owner")) {
       throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
@@ -53,9 +51,12 @@ public class OrderService {
     Store store = storeRepository.findById(storeId).orElseThrow(() ->
         new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
 
+    Menu menu = menuRepository.findById(menuId).orElseThrow(() ->
+        new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
+
     OrderStatus orderStatus = OrderStatus.of("ORDERED");
 
-    Order order = new Order(user, store, orderStatus);
+    Order order = new Order(user, store, menu, orderStatus);
 
     orderRepository.save(order);
   }
@@ -67,11 +68,11 @@ public class OrderService {
     // authUser
     // orderId
 
-    Long userId =  authUser.id(); // 주문한 사람
+    Long userId = authUser.id(); // 주문한 사람
 
-    String userRole =  authUser.userRole().getUserRole();
+    String userRole = authUser.userRole().getUserRole();
 
-    if (userRole.equals("owner")){
+    if (userRole.equals("owner")) {
       return orderRepository.findOrdersByStoreUserId(userId, pageable);
     }
 
@@ -88,10 +89,10 @@ public class OrderService {
     // orderId
     //Long userId = 1L;
 
-    Long userId =  authUser.id();
-    String userRole =  authUser.userRole().getUserRole();
+    Long userId = authUser.id();
+    String userRole = authUser.userRole().getUserRole();
 
-    if (userRole.equals("owner")){
+    if (userRole.equals("owner")) {
       throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
     }
 
@@ -105,10 +106,10 @@ public class OrderService {
   public void updateOrderStatus(
       AuthUser authUser,
       Long orderId,
-      OrderUpdateRequest request){
+      OrderUpdateRequest request) {
 
-    Long userId =  authUser.id();
-    String userRole =  authUser.userRole().getUserRole();
+    Long userId = authUser.id();
+    String userRole = authUser.userRole().getUserRole();
 
     Order order = orderRepository.findOrderByOrderIdOrElseThrow(orderId);
 

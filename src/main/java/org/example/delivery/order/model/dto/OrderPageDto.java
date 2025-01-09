@@ -21,10 +21,10 @@ public class OrderPageDto {
 
   public OrderPageDto(Order order) {
     this.orderId = order.getId();
-//    this.userName = order.getUser().getName();
-//    this.storeName = order.getStore().getName();
-//    this.menuName = order.getMenu().getName();
-//    this.menuPrice = order.getMenu().getPrice();
+    this.userName = order.getUser().getName();
+    this.storeName = order.getStore().getName();
+    this.menuName = order.getMenu().getName();
+    this.menuPrice = order.getMenu().getPrice();
     this.orderStatus = order.getOrderStatus();
     this.createdAt = order.getCreatedAt();
     this.updatedAt = order.getUpdatedAt();

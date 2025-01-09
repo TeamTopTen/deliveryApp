@@ -15,7 +15,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
   @Query("SELECT new org.example.delivery.order.model.dto.OrderPageDto(" +
-      "o.id, o.orderStatus, " +
+      "o.id, o.user.name, o.store.name, o.menu.name," +
+      "o.menu.price, o.orderStatus, " +
       "o.createdAt, o.updatedAt) " +
       "FROM Order o " +
       "WHERE (o.user.id = :userId) " +
@@ -23,7 +24,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
   Page<OrderPageDto> findOrdersByUserId(@Param("userId") Long userId, Pageable pageable);
 
   @Query("SELECT new org.example.delivery.order.model.dto.OrderPageDto(" +
-      "o.id, o.orderStatus, " +
+      "o.id, o.user.name, o.store.name, o.menu.name," +
+      "o.menu.price, o.orderStatus, " +
       "o.createdAt, o.updatedAt) " +
       "FROM Order o " +
       "WHERE o.store.user.id = :userId " + // Store를 통해 User의 id를 조회

@@ -318,6 +318,36 @@ public class MenuServiceTest {
     Assertions.assertEquals(ErrorCode.MENU_ACCESS_DENIED.getMessage(),accessDeniedException.getMessage());
     org.assertj.core.api.Assertions.assertThat(menu.getUser().getEmail()).isNotEqualTo(user.getEmail());
   }
+
+  @Test
+  public void 메뉴_삭제_성공_테스트() {
+    Long menuId = 1L;
+    String email = "test1@test.com";
+    User user = new User("test1@test.com", "Test1234!@#$", "test", "0101111111", "testaddress",
+        UserRole.OWNER);
+    Store store = new Store(user,"맛나식당","01011111111","한국 어딘가","111-11-11111",
+        100, Time.valueOf(LocalTime.now()),Time.valueOf(LocalTime.now()));
+    Menu menu = Menu.menuCreateWithTestCode(menuId,"맛있는 음식",1000,store,user,false);
+
+    when(menuRepository.findByIdOrElseThrow(menuId)).thenReturn(menu);
+
+    when(userRepository.findUsersByEmail(email)).thenReturn(Optional.ofNullable(user));
+
+    doAnswer(invocation -> {
+      Long id = invocation.getArgument(0);
+      if(menu.getIsDeleted()) {
+        throw new NotFoundException(ErrorCode.MENU_NOT_FOUND);
+      }
+      return null;
+    }).when(menuRepository).checkDeleteById(menuId);
+
+    //when
+    menuService.softDeleteMenu(menuId, email);
+
+    //then
+    verify(menuRepository,times(ONE_TIME)).checkDeleteById(menuId); // setDeleted 검증 불가 확인 필요
+  }
+
 }
 
 

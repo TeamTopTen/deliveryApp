@@ -74,18 +74,12 @@ public class MenuService {
   public void softDeleteMenu(Long id,String email) {
 
     Menu checkMenu = menuRepository.findByIdOrElseThrow(id);
-    crossCheckEmail(email,checkMenu.getUser());
+    crossCheckUser(email, checkMenu);
 
     menuRepository.checkDeleteById(id);
 
-    crossCheckUser(email, checkMenu);
-    checkMenu.setDeleted(true);
-  }
 
-  private void crossCheckEmail(String email, User needCheckUser) {
-    if(!(needCheckUser.getEmail().equals(email))) {
-      throw new AccessDeniedException(ErrorCode.MENU_ACCESS_DENIED);
-    }
+    checkMenu.setDeleted(true);
   }
 
   private void crossCheckUser(String email, Menu checkMenu) {

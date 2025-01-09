@@ -16,11 +16,11 @@ public record GetStoreByIdResponse(
     List<Menu> menus
 ) {
 
-  public static GetStoreByIdResponse with(
-      Store store, List<Menu> menus) {
+  public static GetStoreByIdResponse with(Store store, List<Menu> menus) {
 
-    return new GetStoreByIdResponse(store.getName(), store.getStoreNumber(), store.getStoreAddress(),
-        store.getMinOrderPrice(), store.getOpeningTime(), store.getClosingTime(), menus
+    return new GetStoreByIdResponse(store.getName(), store.getStoreNumber(),
+        store.getStoreAddress(), store.getMinOrderPrice(), store.getOpeningTime(),
+        store.getClosingTime(), menus
     );
   }
 }

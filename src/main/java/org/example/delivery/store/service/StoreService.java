@@ -29,7 +29,7 @@ public class StoreService {
 
   public StoreResponse createStore(AuthUser authUser, StoreRequest request) {
 
-    if (storeRepository.countStoreByUserId(authUser.id()) >= 3){
+    if (storeRepository.countStoreByUserId(authUser.id()) >= 3) {
       throw new InvalidModuleDescriptorException(ErrorCode.TOO_MANY_STORES.getCode());
     }
 

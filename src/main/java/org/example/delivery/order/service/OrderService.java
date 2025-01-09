@@ -1,8 +1,6 @@
 package org.example.delivery.order.service;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.example.delivery.auth.model.UserRole;
 import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.auth.repository.UserRepository;
 import org.example.delivery.common.domain.Menu;
@@ -15,7 +13,6 @@ import org.example.delivery.common.exception.base.BusinessException;
 import org.example.delivery.menu.repository.MenuRepository;
 import org.example.delivery.order.model.dto.OrderDto;
 import org.example.delivery.order.model.dto.OrderPageDto;
-import org.example.delivery.order.model.request.OrderCreateRequest;
 import org.example.delivery.order.model.request.OrderUpdateRequest;
 import org.example.delivery.order.repository.OrderRepository;
 import org.example.delivery.store.repository.StoreRepository;
@@ -37,8 +34,7 @@ public class OrderService {
   public void createOrder(
       AuthUser authUser,
       Long storeId,
-      Long menuId,
-      OrderCreateRequest request) {
+      Long menuId) {
 
     String userRole = authUser.userRole().getUserRole();
     Long userId = authUser.id();

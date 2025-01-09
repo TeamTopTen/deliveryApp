@@ -34,7 +34,8 @@ public enum ErrorCode {
 
 
   //Menu
-
+  MENU_ACCESS_DENIED(HttpStatus.FORBIDDEN, "M403", "메뉴는 해당 작성자만 수정 삭제 할 수 있습니다."),
+  MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "M404", "일치하는 정보가 없습니다."),
 
   //Order
 

@@ -5,6 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StoreRepository extends JpaRepository<Store, Long> {
 
-  long countStoreByUserId(long userId);
+  long countStoreByUserIdAndDeletedFalse(long userId);
+
+  boolean existsStoreByName(String name);
+  boolean existsStoreByStoreAddress(String address);
 
 }

@@ -6,6 +6,7 @@ import org.example.delivery.auth.Annotation.Auth;
 import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.review.model.dto.ReviewPageDto;
 import org.example.delivery.review.model.request.ReviewCreateRequest;
+import org.example.delivery.review.model.request.ReviewUpdateRequest;
 import org.example.delivery.review.service.ReviewService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,18 +57,28 @@ public class ReviewController {
   }
 
   // 리뷰 별점 범위 조회 GET /api/stores/{store_id}/reviews?minStar={minStar}&maxStar={maxStar}
-  @GetMapping("/stores/{storeId}/reviews")
+  @GetMapping("/stores/{storeId}/reviews-star")
   public ResponseEntity<Page<ReviewPageDto>> getReviewsByStarRange(
       @PathVariable("storeId") Long storeId,
       @RequestParam("minStar") Integer minStar,
       @RequestParam("maxStar") Integer maxStar,
       Pageable pageable
   ) {
-    Page<ReviewPageDto> reviews = reviewService.getReviewsByStarRange(storeId, minStar, maxStar,
-        pageable);
-    return ResponseEntity.ok(reviews);
+
+    return new ResponseEntity<>(reviewService.getReviewsByStarRange(storeId, minStar, maxStar,
+        pageable), HttpStatus.OK);
   }
 
   //리뷰 수정 /api/orders/{order_id}/reviews/{review_id}
+  @PatchMapping("/reviews/{reviewId}")
+  public ResponseEntity<String> updateReview(
+      @Auth AuthUser authUser,
+      @PathVariable("reviewId") Long reviewId,
+      @Valid @RequestBody ReviewUpdateRequest request
+  ) {
+    reviewService.updateReview(authUser, reviewId, request);
+    return new ResponseEntity<>("리뷰수정이 완료되었습니다.", HttpStatus.OK);
+  }
+
   // 리뷰 삭제 /api/orders/{order_id}/reviews/{review_id}
 }

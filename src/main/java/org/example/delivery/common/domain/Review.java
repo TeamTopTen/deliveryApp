@@ -43,8 +43,9 @@ public class Review extends BaseEntity {
     this.content = content;
   }
 
-  public void changeReviewStar(ReviewStar reviewStar) {
+  public void changeReview(ReviewStar reviewStar, String content) {
     this.reviewStar = reviewStar;
+    this.content = content;
   }
 
 }

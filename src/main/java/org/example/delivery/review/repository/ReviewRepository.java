@@ -1,8 +1,12 @@
 package org.example.delivery.review.repository;
 
 import java.util.List;
+import java.util.Optional;
+import org.example.delivery.common.domain.Order;
 import org.example.delivery.common.domain.Review;
 import org.example.delivery.common.domain.ReviewStar;
+import org.example.delivery.common.exception.ErrorCode;
+import org.example.delivery.common.exception.base.BusinessException;
 import org.example.delivery.review.model.dto.ReviewPageDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,4 +54,11 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
       @Param("stars") List<ReviewStar> stars,
       Pageable pageable
   );
+
+  Optional<Review> findReviewById(Long reviewId);
+
+  default Review findReviewByIdOrElseThrow(Long reviewId){
+    return findReviewById(reviewId).orElseThrow(
+        ()-> new BusinessException(ErrorCode.ORDER_ACCESS_DENIED));
+  }
 }

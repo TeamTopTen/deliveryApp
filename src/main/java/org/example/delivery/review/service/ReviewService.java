@@ -1,5 +1,6 @@
 package org.example.delivery.review.service;
 
+import jakarta.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.example.delivery.common.exception.base.BusinessException;
 import org.example.delivery.order.repository.OrderRepository;
 import org.example.delivery.review.model.dto.ReviewPageDto;
 import org.example.delivery.review.model.request.ReviewCreateRequest;
+import org.example.delivery.review.model.request.ReviewUpdateRequest;
 import org.example.delivery.review.repository.ReviewRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -68,5 +70,27 @@ public class ReviewService {
         .filter(star -> (star.getValue() >= minStar) && (star.getValue() <= maxStar))
         .toList();
     return reviewRepository.findReviewsByStarRange(storeId, stars, pageable);
+  }
+
+  @Transactional
+  public void updateReview(AuthUser authUser, Long reviewId, ReviewUpdateRequest request) {
+    Long userId = authUser.id();
+
+    Review review = reviewRepository.findReviewByIdOrElseThrow(reviewId);
+
+    Long orderId = review.getOrder().getId();
+
+    Order order = orderRepository.findById(orderId).orElseThrow(
+        () -> new BusinessException(ErrorCode.ORDER_ACCESS_DENIED)
+    );
+
+    if (!order.getUser().getId().equals(userId)) {
+      throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED);
+    }
+
+    ReviewStar reviewStar = ReviewStar.of(request.getReviewStar());
+
+    review.changeReview(reviewStar, request.getContent());
+
   }
 }

@@ -52,7 +52,7 @@ public enum ErrorCode {
   STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "NF01", "존재하지 않는 매장입니다"),
   TOO_MANY_STORES(HttpStatus.BAD_REQUEST, "S01", "매장 등록은 최대 3개까지 가능합니다."),
   STORE_NAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "S02", "이미 존재하는 매장 이름입니다"),
-  STORE_ADDRESS_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "S02", "이미 존재하는 매장 이름입니다")
+  STORE_ADDRESS_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "S02", "이미 존재하는 매장 주소입니다")
 
   ;
   private final HttpStatus status;

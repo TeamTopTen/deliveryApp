@@ -515,6 +515,31 @@ public class OrderServiceTest {
     verify(orderRepository,times(ONE_TIME)).findOrdersByStoreUserId(userId,pageableMock);
     verify(orderRepository,never()).findOrdersByUserId(userId,pageableMock);
 
+  }
+
+  @Test
+  public void USER_주문_전체_조회_성공_테스트() {
+    //given
+    Long userId = 1L;
+    UserRole userRole = UserRole.USER;
+// 불러오는 값이 없어서 굳이 안써도됨
+    Page<OrderPageDto> pageMock = mock(Page.class);
+    org.springframework.data.domain.Pageable pageableMock = mock(
+        org.springframework.data.domain.Pageable.class
+    );
+
+    AuthUser authUserMock = mock(AuthUser.class);
+    //doReturn(userId).when(authUserMock).id();
+    when(authUserMock.id()).thenReturn(userId);
+    when(authUserMock.userRole()).thenReturn(userRole);
+
+    when(orderRepository.findOrdersByUserId(userId,
+        pageableMock)).thenReturn(pageMock);
+    //when
+    orderService.findOrders(authUserMock,pageableMock);
+
+    //then
+    verify(orderRepository,times(ONE_TIME)).findOrdersByUserId(userId,pageableMock);
 
   }
 }

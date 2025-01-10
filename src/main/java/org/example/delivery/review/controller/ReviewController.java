@@ -40,7 +40,7 @@ public class ReviewController {
     return new ResponseEntity<>("등록되었습니다. ", HttpStatus.CREATED);
   }
 
-// 리뷰 전체 최신순 조회 GET /api/stores/{store_id}/reviews
+  // 리뷰 전체 최신순 조회 GET /api/stores/{store_id}/reviews
   @GetMapping("/stores/{storeId}/reviews")
   public ResponseEntity<Page<ReviewPageDto>> getReviews(
       @Auth AuthUser authUser,
@@ -50,10 +50,23 @@ public class ReviewController {
   ) {
     Pageable pageable = PageRequest.of(page - 1, size);
 
-    return new ResponseEntity<>(reviewService.findReviews(authUser,storeId,pageable), HttpStatus.OK);
+    return new ResponseEntity<>(reviewService.findReviews(authUser, storeId, pageable),
+        HttpStatus.OK);
   }
 
   // 리뷰 별점 범위 조회 GET /api/stores/{store_id}/reviews?minStar={minStar}&maxStar={maxStar}
+  @GetMapping("/stores/{storeId}/reviews")
+  public ResponseEntity<Page<ReviewPageDto>> getReviewsByStarRange(
+      @PathVariable("storeId") Long storeId,
+      @RequestParam("minStar") Integer minStar,
+      @RequestParam("maxStar") Integer maxStar,
+      Pageable pageable
+  ) {
+    Page<ReviewPageDto> reviews = reviewService.getReviewsByStarRange(storeId, minStar, maxStar,
+        pageable);
+    return ResponseEntity.ok(reviews);
+  }
+
   //리뷰 수정 /api/orders/{order_id}/reviews/{review_id}
   // 리뷰 삭제 /api/orders/{order_id}/reviews/{review_id}
 }

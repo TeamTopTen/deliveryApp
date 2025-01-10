@@ -1,5 +1,7 @@
 package org.example.delivery.review.service;
 
+import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.common.domain.Order;
@@ -57,5 +59,14 @@ public class ReviewService {
 
     return reviewRepository.findReviewsByStoreId(storeId, pageable);
 
+  }
+
+  @Transactional(readOnly = true)
+  public Page<ReviewPageDto> getReviewsByStarRange(Long storeId, Integer minStar, Integer maxStar,
+      Pageable pageable) {
+    List<ReviewStar> stars = Arrays.stream(ReviewStar.values())
+        .filter(star -> (star.getValue() >= minStar) && (star.getValue() <= maxStar))
+        .toList();
+    return reviewRepository.findReviewsByStarRange(storeId, stars, pageable);
   }
 }

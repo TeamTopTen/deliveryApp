@@ -10,6 +10,7 @@ import org.example.delivery.common.domain.ReviewStar;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReviewPageDto {
+
   private Long reviewId;
   private String menuName;
   private Integer menuPrice;

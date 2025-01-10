@@ -29,7 +29,6 @@ public class StoreController {
 
   private final StoreService storeService;
 
-
   @PostMapping("/owners")
   public ResponseEntity<StoreResponse> registerStoreAPI(
       @Auth AuthUser authUser,
@@ -39,7 +38,6 @@ public class StoreController {
 
     return new ResponseEntity<>(response, HttpStatus.CREATED);
   }
-
 
   @GetMapping("/{store_id}/users")
   public ResponseEntity<GetStoreByIdResponse> getStoreByIdAPI(@PathVariable(name = "store_id") long storeId) {
@@ -54,7 +52,6 @@ public class StoreController {
 
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
-
 
   @PutMapping("{store_id}/owners")
   public ResponseEntity<StoreResponse> updateStoreAPI(
@@ -71,5 +68,4 @@ public class StoreController {
 
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
-
 }

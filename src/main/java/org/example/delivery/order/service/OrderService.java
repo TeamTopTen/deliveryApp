@@ -2,6 +2,7 @@ package org.example.delivery.order.service;
 
 import java.time.LocalTime;
 import lombok.RequiredArgsConstructor;
+import org.example.delivery.auth.model.UserRole;
 import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.auth.repository.UserRepository;
 import org.example.delivery.common.domain.Menu;
@@ -10,7 +11,9 @@ import org.example.delivery.common.domain.OrderStatus;
 import org.example.delivery.common.domain.Store;
 import org.example.delivery.common.domain.User;
 import org.example.delivery.common.exception.ErrorCode;
-import org.example.delivery.common.exception.base.BusinessException;
+import org.example.delivery.common.exception.base.AccessDeniedException;
+import org.example.delivery.common.exception.base.InvalidRequestException;
+import org.example.delivery.common.exception.base.NotFoundException;
 import org.example.delivery.menu.repository.MenuRepository;
 import org.example.delivery.order.model.dto.OrderDto;
 import org.example.delivery.order.model.dto.OrderPageDto;
@@ -41,25 +44,25 @@ public class OrderService {
     Long userId = authUser.id();
 
     if (userRole.equals("owner")) {
-      throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED); // user만 등록가능
+      throw new AccessDeniedException(ErrorCode.ORDER_ACCESS_DENIED);
     }
 
-    User user = userRepository.findById(userId).orElseThrow(() ->
-        new BusinessException(ErrorCode.USER_NOT_FOUND));
+    User user = userRepository.findById(userId)
+        .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 
-    Store store = storeRepository.findById(storeId).orElseThrow(() ->
-        new BusinessException(ErrorCode.STORE_NOT_FOUND));
+    Store store = storeRepository.findById(storeId)
+        .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
     if (LocalTime.now().isBefore(store.getOpeningTime().toLocalTime()) ||
         LocalTime.now().isAfter(store.getClosingTime().toLocalTime())) {
-      throw new BusinessException(ErrorCode.ORDER_TIME_BAD_REQUEST);
+      throw new InvalidRequestException(ErrorCode.ORDER_TIME_BAD_REQUEST);
     }
 
-    Menu menu = menuRepository.findById(menuId).orElseThrow(() ->
-        new BusinessException(ErrorCode.MENU_NOT_FOUND));
+    Menu menu = menuRepository.findById(menuId)
+        .orElseThrow(() -> new NotFoundException(ErrorCode.MENU_NOT_FOUND));
 
     if (menu.getPrice() < store.getMinOrderPrice()){
-      throw new BusinessException(ErrorCode.ORDER_MIN_PRICE_BAD_REQUEST);
+      throw new InvalidRequestException(ErrorCode.ORDER_MIN_PRICE_BAD_REQUEST);
     }
 
     OrderStatus orderStatus = OrderStatus.of("ORDERED");
@@ -83,15 +86,14 @@ public class OrderService {
 
   }
 
-
   @Transactional(readOnly = true)
   public OrderDto findOrderbyOrderId(AuthUser authUser, Long orderId) {
 
     Long userId = authUser.id();
 
-    String userRole = authUser.userRole().getUserRole();
+    UserRole userRole = authUser.userRole();
 
-    if (userRole.equals("owner")) {
+    if (userRole.equals(UserRole.OWNER)) {
       Order order = orderRepository.findOrderByStoreUserIdAndOrderIdOrElseThrow(userId, orderId);
       return new OrderDto(order);
     }
@@ -134,7 +136,7 @@ public class OrderService {
     String userRole = authUser.userRole().getUserRole();
 
     if (userRole.equals("owner")) {
-      throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED);
+      throw new AccessDeniedException(ErrorCode.ORDER_ACCESS_DENIED);
     }
 
     Order order = orderRepository.findOrderByUserIdAndOrderIdOrElseThrow(userId, orderId);

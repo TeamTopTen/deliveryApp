@@ -49,7 +49,7 @@ public class MenuService {
   @Transactional
   public List<MenuResponse> findMenu(Long storeId) {
 
-    Store store = storeRepository.findById(storeId)
+    storeRepository.findById(storeId)
         .orElseThrow(() -> new NotFoundException(ErrorCode.MENU_NOT_FOUND));
 
     List<Menu> findMenuList = menuRepository.findByStore_IdAndIsDeleted(storeId,false);
@@ -61,10 +61,19 @@ public class MenuService {
   public MenuResponse putMenu(Long id,MenuRequest request,String email) {
 
     Menu checkMenu = menuRepository.findByIdOrElseThrow(id);
+
     menuRepository.checkDeleteById(id);
+
     crossCheckUser(email, checkMenu);
 
-    Menu menu = Menu.menuPut(checkMenu.getId(),request.getName(), request.getPrice(), checkMenu.getStore(), checkMenu.getUser());
+    Menu menu = Menu.menuPut(
+        checkMenu.getId(),
+        request.getName(),
+        request.getPrice(),
+        checkMenu.getStore(),
+        checkMenu.getUser()
+    );
+
     menuRepository.save(menu);
 
     return MenuResponse.createMenuResponse(menu);
@@ -74,16 +83,17 @@ public class MenuService {
   public void softDeleteMenu(Long id,String email) {
 
     Menu checkMenu = menuRepository.findByIdOrElseThrow(id);
+
     crossCheckUser(email, checkMenu);
 
     menuRepository.checkDeleteById(id);
-
 
     checkMenu.setDeleted(true);
   }
 
   private void crossCheckUser(String email, Menu checkMenu) {
-    if(!(checkMenu.getUser()==userRepository.findUsersByEmail(email).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)))) {
+    if(!(checkMenu.getUser()==userRepository.findUsersByEmail(email)
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND)))) {
       throw new AccessDeniedException(ErrorCode.MENU_ACCESS_DENIED);
     }
   }

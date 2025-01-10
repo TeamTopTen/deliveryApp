@@ -5,11 +5,8 @@ import org.springframework.http.HttpStatus;
 
 /**
  * 커스텀 코드 규칙
- * - 맨 앞 글자는 각 도메인의 앞글자를 대문자로 바꾸어 입력해줍니다.
- * - 대문자 뒤 숫자코드는 어느 카테고리의 예외인지 입력해줍니다.
- * - 예외 작성 순서는 예외 카테고리의 숫자를 오름차순으로 입력해줍니다.
- * 1. status: 예외 카테고리 코드 2. code: 커스텀 코드(상태코드) 3.message: 예외 메시지
- * 주의 사항 : 열거 할 때 끝에 쉼표 , 꼭 붙여주세요.
+ * - 코드 첫 글자는 대문자로 도메인의 앞 글자를 사용합니다.
+ * -
  */
 @Getter
 public enum ErrorCode {
@@ -41,11 +38,12 @@ public enum ErrorCode {
   //Order
   ORDER_ACCESS_DENIED(HttpStatus.FORBIDDEN, "O403", "주문은 유저만 등록/삭제 할 수 있습니다."),
   ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "O404", "존재하지 않는 주문입니다."),
+  ORDER_STATUS_NOT_FOUND(HttpStatus.NOT_FOUND, "O404", "존재하지 않는 주문입니다."),
   ORDER_MIN_PRICE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "O400", "가게에서 설정한 최소 주문 금액을 만족해야 주문이 가능합니다."),
   ORDER_TIME_BAD_REQUEST(HttpStatus.BAD_REQUEST, "O400", "가게의 오픈/마감 시간이 지나면 주문할 수 없습니다."),
 
   //Review
-  REVIEW_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "R400", "리뷰가 이미 존재합니다."),
+  REVIEW_ALREADY_EXISTS(HttpStatus.CONFLICT, "R400", "리뷰가 이미 존재합니다."),
   REVIEW_NOT_ORDER_COMPLETED(HttpStatus.FORBIDDEN, "R403", "배달 완료 되지 않은 주문은 리뷰를 작성할 수 없습니다."),
   REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "RO404", "리뷰를 찾을 수 없습니다."),
 
@@ -53,7 +51,7 @@ public enum ErrorCode {
   STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "NF01", "존재하지 않는 매장입니다"),
   TOO_MANY_STORES(HttpStatus.BAD_REQUEST, "S01", "매장 등록은 최대 3개까지 가능합니다."),
   STORE_NAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "S02", "이미 존재하는 매장 이름입니다"),
-  STORE_ADDRESS_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "S02", "이미 존재하는 매장 이름입니다")
+  STORE_ADDRESS_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "S02", "이미 존재하는 매장 주소입니다")
 
   ;
   private final HttpStatus status;

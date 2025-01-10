@@ -38,9 +38,9 @@ public class ReviewController {
   ) {
 
     reviewService.createReview(authUser, orderId, request);
-
     return new ResponseEntity<>("리뷰가 등록되었습니다. ", HttpStatus.CREATED);
   }
+
 
   @GetMapping("/stores/{storeId}/reviews")
   public ResponseEntity<Page<ReviewPageDto>> getReviews(
@@ -73,6 +73,7 @@ public class ReviewController {
       @PathVariable("reviewId") Long reviewId,
       @Valid @RequestBody ReviewUpdateRequest request
   ) {
+
     reviewService.updateReview(authUser, reviewId, request);
     return new ResponseEntity<>("리뷰수정이 완료되었습니다.", HttpStatus.OK);
   }
@@ -85,5 +86,4 @@ public class ReviewController {
     reviewService.deleteReview(authUser, reviewId);
     return new ResponseEntity<>("리뷰삭제가 완료되었습니다.", HttpStatus.OK);
   }
-
 }

@@ -3,15 +3,14 @@ package org.example.delivery.review.model.request;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.example.delivery.common.domain.ReviewStar;
 
 @AllArgsConstructor
 @Getter
 public class ReviewCreateRequest {
 
-  @NotNull(message = "reviewStar is required")
+  @NotNull(message = "별점을 입력해주세요.")
   private Integer reviewStar;
 
-  @NotNull(message = "content is required")
+  @NotNull(message = "내용을 입력해주세요.")
   private String content;
 }

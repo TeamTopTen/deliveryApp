@@ -11,16 +11,12 @@ public class MenuRequest {
 
   public MenuRequest() {
   }
-  @NotBlank
-  @NotNull
+  @NotBlank(message = "빈칸으로 제출할 수 없습니다")
   private String email;
 
-  @NotBlank
-  @NotNull
+  @NotBlank(message = "빈칸으로 제출할 수 없습니다")
   private String name;
-
 
   @NotNull
   private Integer price;
-
 }

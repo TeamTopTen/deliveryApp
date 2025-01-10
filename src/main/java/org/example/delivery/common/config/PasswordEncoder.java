@@ -1,4 +1,4 @@
-package org.example.delivery.common.config.encode;
+package org.example.delivery.common.config;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;

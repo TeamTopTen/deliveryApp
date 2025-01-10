@@ -11,9 +11,6 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.example.delivery.common.config.encode.PasswordEncoder;
-import org.example.delivery.common.exception.ErrorCode;
-import org.example.delivery.common.exception.base.AuthException;
 import org.example.delivery.auth.model.UserRole;
 
 @Getter

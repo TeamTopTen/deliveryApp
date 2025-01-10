@@ -37,5 +37,4 @@ public record StoreRequest(
     @NotNull(message = "가게 여는 시간은 필수 입력값입니다. hh:mm:ss 양식으로 입력해주세요")
     Time closingTime
 ) {
-
 }

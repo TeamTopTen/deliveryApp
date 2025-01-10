@@ -1,8 +1,7 @@
-package org.example.delivery.common.config.filter;
+package org.example.delivery.common.config;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.example.delivery.common.config.AuthUserArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

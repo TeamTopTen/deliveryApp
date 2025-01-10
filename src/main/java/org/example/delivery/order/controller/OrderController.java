@@ -35,10 +35,11 @@ public class OrderController {
       @PathVariable("storeId") Long storeId,
       @PathVariable("menuId") Long menuId
   ) {
+
     orderService.createOrder(authUser, storeId, menuId);
+
     return new ResponseEntity<>("등록되었습니다. ", HttpStatus.CREATED);
   }
-
 
   @GetMapping("/orders")
   public ResponseEntity<Page<OrderPageDto>> getOrders(
@@ -46,12 +47,12 @@ public class OrderController {
       @RequestParam(defaultValue = "10") int size,
       @RequestParam(defaultValue = "1") int page
   ) {
+
     Pageable pageable = PageRequest.of(page - 1, size);
 
     return new ResponseEntity<>(orderService.findOrders(authUser, pageable),
         HttpStatus.OK);
   }
-
 
   @GetMapping("/orders/{orderId}")
   public ResponseEntity<OrderDto> getOrders(
@@ -72,7 +73,6 @@ public class OrderController {
     return new ResponseEntity<>("수정 되었습니다. ", HttpStatus.OK);
   }
 
-
   @PatchMapping("/orders/{orderId}/deletion")
   public ResponseEntity<String> updateOrderStatus(
       @Auth AuthUser authUser,
@@ -81,5 +81,4 @@ public class OrderController {
     orderService.softDeleteOrder(authUser, orderId);
     return new ResponseEntity<>("삭제 되었습니다. ", HttpStatus.OK);
   }
-
 }

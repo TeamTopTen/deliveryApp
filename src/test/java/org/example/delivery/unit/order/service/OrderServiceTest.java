@@ -2,17 +2,14 @@ package org.example.delivery.unit.order.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.awt.print.Pageable;
 import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Optional;
 import org.example.delivery.auth.model.UserRole;
 import org.example.delivery.auth.model.dto.AuthUser;
@@ -25,7 +22,6 @@ import org.example.delivery.common.domain.User;
 import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.BusinessException;
 import org.example.delivery.menu.repository.MenuRepository;
-import org.example.delivery.order.model.dto.OrderDto;
 import org.example.delivery.order.model.dto.OrderPageDto;
 import org.example.delivery.order.repository.OrderRepository;
 import org.example.delivery.order.service.OrderService;
@@ -268,13 +264,6 @@ public class OrderServiceTest {
     Menu menu = Menu.menuCreate(menuName, menuPrice, store, user);
     Order order = new Order(user, store, menu, orderStatus);
 
-     // 방법 1
-//    User userMock = mock(User.class);
-//    when(userRepository.findById(userId)).thenReturn(Optional.of(userMock));
-
-    // 방법2
-//    when(userRepository.findById(userId)).thenReturn(Optional.of(mock()));
-
     when(userRepository.findById(userId)).thenReturn(Optional.of(user));
     when(storeRepository.findById(storeId)).thenReturn(Optional.ofNullable(null));
 
@@ -497,7 +486,7 @@ public class OrderServiceTest {
     //given
     Long userId = 1L;
     UserRole userRole = UserRole.OWNER;
-// 불러오는 값이 없어서 굳이 안써도됨
+
     Page<OrderPageDto> pageMock = mock(Page.class);
     org.springframework.data.domain.Pageable pageableMock = mock(
         org.springframework.data.domain.Pageable.class
@@ -524,7 +513,7 @@ public class OrderServiceTest {
     //given
     Long userId = 1L;
     UserRole userRole = UserRole.USER;
-// 불러오는 값이 없어서 굳이 안써도됨
+
     Page<OrderPageDto> pageMock = mock(Page.class);
     org.springframework.data.domain.Pageable pageableMock = mock(
         org.springframework.data.domain.Pageable.class

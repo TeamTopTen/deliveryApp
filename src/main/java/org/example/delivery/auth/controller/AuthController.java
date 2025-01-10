@@ -14,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,7 +39,7 @@ public class AuthController {
   @DeleteMapping("/deregister")
   public ResponseEntity<Void> deregister(
       @Valid @RequestBody DeregisterRequest request,
-      HttpServletRequest httpRequest) { //TODO jwt 전용 익셉션 추가
+      HttpServletRequest httpRequest) {
     String email = (String) httpRequest.getAttribute("email");
     authService.deregister(request, email);
     return new ResponseEntity<>(HttpStatus.OK);

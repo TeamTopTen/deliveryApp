@@ -12,8 +12,6 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.InvalidRequestException;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 @Entity
 @Table(name="menu")
@@ -62,11 +60,12 @@ public class Menu extends BaseEntity {
   }
 
   public Menu() {
-
   }
+
   public static Menu menuCreateWithTestCode(Long id,String name,Integer price,Store store,User user,boolean isDeleted) {
     return new Menu(id,name,price,store,user,isDeleted);
   }
+
   public static Menu menuCreate(String name,Integer price,Store store,User user) {
     return new Menu(name,price,store,user);
   }

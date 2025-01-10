@@ -15,13 +15,11 @@ public class ErrorResponse {
 
   private ErrorResponse(ErrorCode errorCode) { //정적 팩토리 메서드에서 쓰려고 만든 생성자
     this.errorCode = errorCode.getStatus();
-    this.code = errorCode.getCode();
     this.message = errorCode.getMessage();
   }
 
   public ErrorResponse(final ErrorCode errorCode, final String message) {
     this.message = message;
-    this.code = errorCode.getCode();
   }
 
   public static ErrorResponse of(final ErrorCode errorCode) {

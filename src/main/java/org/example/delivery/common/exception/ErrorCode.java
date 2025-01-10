@@ -34,21 +34,25 @@ public enum ErrorCode {
 
 
   //Menu
+  Menu_BAD_REQUEST(HttpStatus.BAD_REQUEST, "M400", "메뉴 작성할 수 없습니다."),
   MENU_ACCESS_DENIED(HttpStatus.FORBIDDEN, "M403", "메뉴는 해당 작성자만 수정 삭제 할 수 있습니다."),
   MENU_NOT_FOUND(HttpStatus.NOT_FOUND, "M404", "일치하는 정보가 없습니다."),
 
   //Order
   ORDER_ACCESS_DENIED(HttpStatus.FORBIDDEN, "O403", "주문은 유저만 등록/삭제 할 수 있습니다."),
   ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "O404", "존재하지 않는 주문입니다."),
-
+  ORDER_MIN_PRICE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "B400", "가게에서 설정한 최소 주문 금액을 만족해야 주문이 가능합니다."),
+  ORDER_TIME_BAD_REQUEST(HttpStatus.BAD_REQUEST, "B400", "가게의 오픈/마감 시간이 지나면 주문할 수 없습니다."),
 
   //Review
+
 
 
   //Store
   STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "NF01", "존재하지 않는 매장입니다"),
   TOO_MANY_STORES(HttpStatus.BAD_REQUEST, "S01", "매장 등록은 최대 3개까지 가능합니다."),
-
+  STORE_NAME_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "S02", "이미 존재하는 매장 이름입니다"),
+  STORE_ADDRESS_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "S02", "이미 존재하는 매장 이름입니다")
 
   ;
   private final HttpStatus status;

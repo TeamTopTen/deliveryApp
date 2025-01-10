@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.example.delivery.common.domain.ReviewStar;
+import org.example.delivery.common.domain.enums.ReviewStar;
 
 @Getter
 @AllArgsConstructor

@@ -1,4 +1,4 @@
-package org.example.delivery.common.domain;
+package org.example.delivery.common.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +18,7 @@ import org.example.delivery.store.model.dto.request.StoreRequest;
 @Getter
 @NoArgsConstructor
 @Table(name = "store")
-public class Store extends BaseEntity{
+public class Store extends BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

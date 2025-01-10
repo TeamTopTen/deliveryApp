@@ -1,4 +1,4 @@
-package org.example.delivery.common.domain;
+package org.example.delivery.common.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,6 +13,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.delivery.common.domain.enums.ReviewStar;
 
 @Table(name = "review")
 @Entity

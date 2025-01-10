@@ -2,7 +2,7 @@ package org.example.delivery.store.model.dto.response;
 
 import java.sql.Time;
 import java.util.List;
-import org.example.delivery.common.domain.Store;
+import org.example.delivery.common.domain.entity.Store;
 import org.example.delivery.menu.model.response.MenuResponse;
 
 public record GetStoreByIdResponse(

@@ -1,11 +1,9 @@
 package org.example.delivery.menu.model.response;
 
-import static java.awt.SystemColor.menu;
-
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
-import org.example.delivery.common.domain.Menu;
+import org.example.delivery.common.domain.entity.Menu;
 
 @Getter
 public class MenuResponse {

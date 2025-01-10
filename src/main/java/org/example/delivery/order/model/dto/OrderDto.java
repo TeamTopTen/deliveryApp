@@ -3,8 +3,8 @@ package org.example.delivery.order.model.dto;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.example.delivery.common.domain.Order;
-import org.example.delivery.common.domain.OrderStatus;
+import org.example.delivery.common.domain.entity.Order;
+import org.example.delivery.common.domain.enums.OrderStatus;
 
 @Getter
 @AllArgsConstructor

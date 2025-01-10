@@ -1,6 +1,6 @@
-package org.example.delivery.common.domain;
+package org.example.delivery.common.domain.entity;
 
-import static org.example.delivery.auth.model.UserRole.OWNER;
+import static org.example.delivery.common.domain.enums.UserRole.OWNER;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

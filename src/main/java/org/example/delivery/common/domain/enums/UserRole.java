@@ -1,4 +1,4 @@
-package org.example.delivery.auth.model;
+package org.example.delivery.common.domain.enums;
 
 import java.util.Arrays;
 import lombok.Getter;

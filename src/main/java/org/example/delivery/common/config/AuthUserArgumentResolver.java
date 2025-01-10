@@ -2,7 +2,7 @@ package org.example.delivery.common.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.example.delivery.auth.Annotation.Auth;
-import org.example.delivery.auth.model.UserRole;
+import org.example.delivery.common.domain.enums.UserRole;
 import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.AuthException;
@@ -22,7 +22,7 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
     boolean isAuthUserType = parameter.getParameterType().equals(AuthUser.class);
 
     if (hasAuthAnnotation != isAuthUserType) {
-      throw new AuthException(ErrorCode.AUTHENTICATION_FAILED); //TODO JWT Exception - Authentication 예외 만들기
+      throw new AuthException(ErrorCode.AUTHENTICATION_FAILED);
     }
     return hasAuthAnnotation;
   }

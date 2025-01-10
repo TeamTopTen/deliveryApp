@@ -1,7 +1,7 @@
 package org.example.delivery.order.repository;
 
 import java.util.Optional;
-import org.example.delivery.common.domain.Order;
+import org.example.delivery.common.domain.entity.Order;
 import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.NotFoundException;
 import org.example.delivery.order.model.dto.OrderPageDto;

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.example.delivery.common.domain.Order;
+import org.example.delivery.common.domain.entity.Order;
 import org.springframework.stereotype.Component;
 
 @Slf4j

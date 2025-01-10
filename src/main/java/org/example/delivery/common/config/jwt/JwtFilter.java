@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.delivery.auth.model.UserRole;
+import org.example.delivery.common.domain.enums.UserRole;
 
 @Slf4j
 @RequiredArgsConstructor

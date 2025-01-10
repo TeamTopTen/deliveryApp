@@ -11,7 +11,7 @@ import java.util.Base64;
 import java.util.Date;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.example.delivery.auth.model.UserRole;
+import org.example.delivery.common.domain.enums.UserRole;
 import org.springframework.stereotype.Component;
 
 @Slf4j

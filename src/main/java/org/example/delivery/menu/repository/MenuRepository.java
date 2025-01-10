@@ -1,7 +1,7 @@
 package org.example.delivery.menu.repository;
 
 import java.util.List;
-import org.example.delivery.common.domain.Menu;
+import org.example.delivery.common.domain.entity.Menu;
 import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.NotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;

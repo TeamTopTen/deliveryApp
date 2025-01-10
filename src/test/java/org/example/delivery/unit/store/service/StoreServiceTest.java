@@ -5,11 +5,11 @@ import static org.assertj.core.api.Assertions.*;
 
 import java.sql.Time;
 import java.util.List;
-import org.example.delivery.auth.model.UserRole;
+import org.example.delivery.common.domain.enums.UserRole;
 import org.example.delivery.auth.model.dto.AuthUser;
-import org.example.delivery.common.domain.Menu;
-import org.example.delivery.common.domain.Store;
-import org.example.delivery.common.domain.User;
+import org.example.delivery.common.domain.entity.Menu;
+import org.example.delivery.common.domain.entity.Store;
+import org.example.delivery.common.domain.entity.User;
 import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.BusinessException;
 import org.example.delivery.common.exception.base.ConflictException;

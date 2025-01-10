@@ -1,6 +1,6 @@
 package org.example.delivery.auth.model.dto;
 
-import org.example.delivery.auth.model.UserRole;
+import org.example.delivery.common.domain.enums.UserRole;
 // 인증 객체
 public record AuthUser(
 

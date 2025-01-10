@@ -1,7 +1,7 @@
 package org.example.delivery.store.model.dto.response;
 
 import java.sql.Time;
-import org.example.delivery.common.domain.Store;
+import org.example.delivery.common.domain.entity.Store;
 
 public record GetStoresResponse(
 

@@ -2,8 +2,8 @@ package org.example.delivery.review.repository;
 
 import java.util.List;
 import java.util.Optional;
-import org.example.delivery.common.domain.Review;
-import org.example.delivery.common.domain.ReviewStar;
+import org.example.delivery.common.domain.entity.Review;
+import org.example.delivery.common.domain.enums.ReviewStar;
 import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.NotFoundException;
 import org.example.delivery.review.model.dto.ReviewPageDto;

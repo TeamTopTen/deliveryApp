@@ -1,11 +1,15 @@
 package org.example.delivery.unit.order.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.awt.print.Pageable;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.Optional;
@@ -20,6 +24,7 @@ import org.example.delivery.common.domain.User;
 import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.BusinessException;
 import org.example.delivery.menu.repository.MenuRepository;
+import org.example.delivery.order.model.dto.OrderPageDto;
 import org.example.delivery.order.repository.OrderRepository;
 import org.example.delivery.order.service.OrderService;
 import org.example.delivery.store.repository.StoreRepository;
@@ -29,6 +34,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -141,7 +147,7 @@ public class OrderServiceTest {
 
     //then
     verify(userRepository,never()).findById(userId);
-    org.assertj.core.api.Assertions.assertThat(businessException.getMessage()).isEqualTo(ErrorCode.ORDER_ACCESS_DENIED.getMessage());
+    assertThat(businessException.getMessage()).isEqualTo(ErrorCode.ORDER_ACCESS_DENIED.getMessage());
 
   }
 
@@ -191,9 +197,39 @@ public class OrderServiceTest {
     //then
     verify(userRepository,times(ONE_TIME)).findById(userId);
     verify(storeRepository,never()).findById(storeId);
-    org.assertj.core.api.Assertions.assertThat(businessException.getMessage()).isEqualTo(ErrorCode.USER_NOT_FOUND.getMessage());
+    assertThat(businessException.getMessage()).isEqualTo(ErrorCode.USER_NOT_FOUND.getMessage());
 
   }
+
+  @Test
+  public void 주문_생성_실패_CASE_2_user가_없을때_테스트_개선() {
+    //given
+    UserRole userRole = UserRole.USER;
+
+    Long userId = 1L;
+    Long storeId = 1L;
+    Long menuId = 1L;
+
+    AuthUser authUserMock = mock(AuthUser.class);
+    when(authUserMock.id()).thenReturn(userId);
+    when(authUserMock.userRole()).thenReturn(userRole);
+
+    when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+    //when
+    BusinessException businessException = Assertions.assertThrows(
+        BusinessException.class,
+        () -> orderService.createOrder(authUserMock, storeId, menuId)
+    );
+
+    //then
+    verify(userRepository,times(ONE_TIME)).findById(userId);
+    verify(storeRepository,never()).findById(storeId);
+    verify(orderRepository,never()).save(any(Order.class));
+    assertThat(businessException.getMessage()).isEqualTo(ErrorCode.USER_NOT_FOUND.getMessage());
+
+  }
+
 
   @Test
   public void 주문_생성_실패_CASE_3_store가_없을때_테스트() {
@@ -230,6 +266,13 @@ public class OrderServiceTest {
     Menu menu = Menu.menuCreate(menuName, menuPrice, store, user);
     Order order = new Order(user, store, menu, orderStatus);
 
+     // 방법 1
+//    User userMock = mock(User.class);
+//    when(userRepository.findById(userId)).thenReturn(Optional.of(userMock));
+
+    // 방법2
+//    when(userRepository.findById(userId)).thenReturn(Optional.of(mock()));
+
     when(userRepository.findById(userId)).thenReturn(Optional.of(user));
     when(storeRepository.findById(storeId)).thenReturn(Optional.ofNullable(null));
 
@@ -241,7 +284,7 @@ public class OrderServiceTest {
     //then
     verify(storeRepository,times(ONE_TIME)).findById(storeId);
     verify(menuRepository,never()).findById(menuId);
-    org.assertj.core.api.Assertions.assertThat(businessException.getMessage()).isEqualTo(ErrorCode.STORE_NOT_FOUND.getMessage());
+    assertThat(businessException.getMessage()).isEqualTo(ErrorCode.STORE_NOT_FOUND.getMessage());
 
   }
 
@@ -291,7 +334,7 @@ public class OrderServiceTest {
     //then
     verify(storeRepository,times(ONE_TIME)).findById(storeId);
     verify(menuRepository,never()).findById(menuId);
-    org.assertj.core.api.Assertions.assertThat(businessException.getMessage()).isEqualTo(ErrorCode.ORDER_TIME_BAD_REQUEST.getMessage());
+    assertThat(businessException.getMessage()).isEqualTo(ErrorCode.ORDER_TIME_BAD_REQUEST.getMessage());
 
   }
 
@@ -341,7 +384,7 @@ public class OrderServiceTest {
     //then
     verify(storeRepository,times(ONE_TIME)).findById(storeId);
     verify(menuRepository,never()).findById(menuId);
-    org.assertj.core.api.Assertions.assertThat(businessException.getMessage()).isEqualTo(ErrorCode.ORDER_TIME_BAD_REQUEST.getMessage());
+    assertThat(businessException.getMessage()).isEqualTo(ErrorCode.ORDER_TIME_BAD_REQUEST.getMessage());
 
   }
 
@@ -392,7 +435,7 @@ public class OrderServiceTest {
     //then
     verify(menuRepository,times(ONE_TIME)).findById(menuId);
     verify(orderRepository,never()).save(any(Order.class));
-    org.assertj.core.api.Assertions.assertThat(businessException.getMessage()).isEqualTo(ErrorCode.MENU_NOT_FOUND.getMessage());
+    assertThat(businessException.getMessage()).isEqualTo(ErrorCode.MENU_NOT_FOUND.getMessage());
 
   }
 
@@ -443,7 +486,35 @@ public class OrderServiceTest {
     //then
     verify(menuRepository,times(ONE_TIME)).findById(menuId);
     verify(orderRepository,never()).save(any(Order.class));
-    org.assertj.core.api.Assertions.assertThat(businessException.getMessage()).isEqualTo(ErrorCode.ORDER_MIN_PRICE_BAD_REQUEST.getMessage());
+    assertThat(businessException.getMessage()).isEqualTo(ErrorCode.ORDER_MIN_PRICE_BAD_REQUEST.getMessage());
+
+  }
+
+  @Test
+  public void OWNER_주문_전체_조회_성공_테스트() {
+    //given
+    Long userId = 1L;
+    UserRole userRole = UserRole.OWNER;
+// 불러오는 값이 없어서 굳이 안써도됨
+    Page<OrderPageDto> pageMock = mock(Page.class);
+    org.springframework.data.domain.Pageable pageableMock = mock(
+        org.springframework.data.domain.Pageable.class
+    );
+
+    AuthUser authUserMock = mock(AuthUser.class);
+    //doReturn(userId).when(authUserMock).id();
+    when(authUserMock.id()).thenReturn(userId);
+    when(authUserMock.userRole()).thenReturn(userRole);
+
+    when(orderRepository.findOrdersByStoreUserId(userId,
+        pageableMock)).thenReturn(pageMock);
+    //when
+    orderService.findOrders(authUserMock,pageableMock);
+
+    //then
+    verify(orderRepository,times(ONE_TIME)).findOrdersByStoreUserId(userId,pageableMock);
+    verify(orderRepository,never()).findOrdersByUserId(userId,pageableMock);
+
 
   }
 }

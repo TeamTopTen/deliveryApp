@@ -59,6 +59,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
   default Review findReviewByIdOrElseThrow(Long reviewId){
     return findReviewById(reviewId).orElseThrow(
-        ()-> new BusinessException(ErrorCode.ORDER_ACCESS_DENIED));
+        ()-> new BusinessException(ErrorCode.REVIEW_NOT_FOUND));
   }
 }

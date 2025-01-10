@@ -31,21 +31,20 @@ public class ReviewService {
       AuthUser authUser,
       Long orderId,
       ReviewCreateRequest request) {
-
-    if (reviewRepository.existsByOrderId(orderId)) {
-      throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED);
-    }
-
     Long userId = authUser.id();
 
     Order order = orderRepository.findByIdOrThrow(orderId);
 
     if (!userId.equals(order.getUser().getId())) {
-      throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED);
+      throw new BusinessException(ErrorCode.USER_ACCESS_DENIED);
+    }
+
+    if (reviewRepository.existsByOrderId(orderId)) {
+      throw new BusinessException(ErrorCode.REVIEW_ALREADY_EXISTS);
     }
 
     if (!order.getOrderStatus().toString().equals("COMPLETED")) {
-      throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED);
+      throw new BusinessException(ErrorCode.REVIEW_NOT_ORDER_COMPLETED);
     }
 
     ReviewStar reviewStar = ReviewStar.of(request.getReviewStar());
@@ -84,7 +83,7 @@ public class ReviewService {
     );
 
     if (!order.getUser().getId().equals(userId)) {
-      throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED);
+      throw new BusinessException(ErrorCode.USER_ACCESS_DENIED);
     }
 
     ReviewStar reviewStar = ReviewStar.of(request.getReviewStar());
@@ -102,7 +101,7 @@ public class ReviewService {
     Long orderId = review.getOrder().getId();
 
     Order order = orderRepository.findById(orderId).orElseThrow(
-        () -> new BusinessException(ErrorCode.ORDER_ACCESS_DENIED)
+        () -> new BusinessException(ErrorCode.ORDER_NOT_FOUND)
     );
 
     if (!order.getUser().getId().equals(userId)) {

@@ -17,6 +17,7 @@ import org.example.delivery.common.domain.Order;
 import org.example.delivery.common.domain.OrderStatus;
 import org.example.delivery.common.domain.Store;
 import org.example.delivery.common.domain.User;
+import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.BusinessException;
 import org.example.delivery.menu.repository.MenuRepository;
 import org.example.delivery.order.repository.OrderRepository;
@@ -138,13 +139,65 @@ public class OrderServiceTest {
     Order order = new Order(user, store, menu, orderStatus);
 
     //when
-    Assertions.assertThrows(BusinessException.class,()->{
-      orderService.createOrder(authUser,storeId,menuId);
+    BusinessException businessException = Assertions.assertThrows(BusinessException.class, () -> {
+      orderService.createOrder(authUser, storeId, menuId);
     });
-
 
     //then
     verify(userRepository,never()).findById(userId);
+    org.assertj.core.api.Assertions.assertThat(businessException.getMessage()).isEqualTo(ErrorCode.ORDER_ACCESS_DENIED.getMessage());
+
+  }
+
+  @Test
+  public void 주문_생성_실패_CASE_2_userId가_다를때_테스트() {
+    //given
+    String email = "Test1234@test.com";
+    UserRole userRole = UserRole.USER;
+    String userName = "test";
+    String password = "Test1234!@#$";
+    String phoneNumber = "0101111111";
+    String userAddress = "testaddress";
+
+    String storeName = "맛나식당";
+    String storeNumber = "01011111111";
+    String storeAddress = "한국 어딘가";
+    String registrationNumber = "111-11-11111";
+    Integer minOrederPrice = 1000;
+    String  stringOpeningTime = "7:00:00";
+    Time openingTime = Time.valueOf(stringOpeningTime);
+    String  stringClosingTime = "22:00:00";
+    Time closingTime = Time.valueOf(stringClosingTime);
+    String  stringCurrentTime = "12:11:10";
+    Time currentTime = Time.valueOf(stringCurrentTime);
+
+    String menuName = "맛있는 음식";
+    Integer menuPrice = 2000;
+
+    OrderStatus orderStatus = OrderStatus.of("ORDERED");
+
+    Long userId = 1L;
+    Long storeId = 1L;
+    Long menuId = 1L;
+
+    AuthUser authUser = new AuthUser(userId, email, userRole);
+    User user = new User(email,password,userName,phoneNumber,userAddress,userRole);
+    Store store = new Store(user,storeName,storeNumber,storeAddress,registrationNumber,minOrederPrice,openingTime,closingTime);
+    Menu menu = Menu.menuCreate(menuName, menuPrice, store, user);
+    Order order = new Order(user, store, menu, orderStatus);
+
+    when(userRepository.findById(userId)).thenReturn(Optional.ofNullable(null));
+    //when(userRepository.findById(userId)).thenThrow(BusinessException.class);
+
+    //when
+    BusinessException businessException = Assertions.assertThrows(BusinessException.class, () -> {
+      orderService.createOrder(authUser, storeId, menuId);
+    });
+
+    //then
+    verify(userRepository,times(ONE_TIME)).findById(userId);
+    verify(storeRepository,never()).findById(storeId);
+    org.assertj.core.api.Assertions.assertThat(businessException.getMessage()).isEqualTo(ErrorCode.USER_NOT_FOUND.getMessage());
 
   }
 

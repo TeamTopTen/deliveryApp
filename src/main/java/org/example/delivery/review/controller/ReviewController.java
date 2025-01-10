@@ -2,7 +2,7 @@ package org.example.delivery.review.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.delivery.auth.Annotation.Auth;
+import org.example.delivery.auth.annotation.Auth;
 import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.review.model.dto.ReviewPageDto;
 import org.example.delivery.review.model.request.ReviewCreateRequest;

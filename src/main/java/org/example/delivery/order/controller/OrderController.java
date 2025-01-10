@@ -2,7 +2,7 @@ package org.example.delivery.order.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.example.delivery.auth.Annotation.Auth;
+import org.example.delivery.auth.annotation.Auth;
 import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.order.model.dto.OrderDto;
 import org.example.delivery.order.model.dto.OrderPageDto;

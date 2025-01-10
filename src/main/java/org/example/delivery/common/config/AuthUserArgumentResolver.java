@@ -1,7 +1,7 @@
 package org.example.delivery.common.config;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.example.delivery.auth.Annotation.Auth;
+import org.example.delivery.auth.annotation.Auth;
 import org.example.delivery.common.domain.enums.UserRole;
 import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.common.exception.ErrorCode;

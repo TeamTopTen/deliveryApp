@@ -395,4 +395,55 @@ public class OrderServiceTest {
     org.assertj.core.api.Assertions.assertThat(businessException.getMessage()).isEqualTo(ErrorCode.MENU_NOT_FOUND.getMessage());
 
   }
+
+  @Test
+  public void 주문_생성_실패_CASE_7_최소_주문_금액_미달_테스트() {
+    //given
+    String email = "Test1234@test.com";
+    UserRole userRole = UserRole.USER;
+    String userName = "test";
+    String password = "Test1234!@#$";
+    String phoneNumber = "0101111111";
+    String userAddress = "testaddress";
+
+    String storeName = "맛나식당";
+    String storeNumber = "01011111111";
+    String storeAddress = "한국 어딘가";
+    String registrationNumber = "111-11-11111";
+    Integer minOrederPrice = 1000;
+    String  stringOpeningTime = "7:00:00";
+    Time openingTime = Time.valueOf(stringOpeningTime);
+    String  stringClosingTime = "22:00:00";
+    Time closingTime = Time.valueOf(stringClosingTime);
+
+    String menuName = "맛있는 음식";
+    Integer menuPrice = 500;
+
+    OrderStatus orderStatus = OrderStatus.of("ORDERED");
+
+    Long userId = 1L;
+    Long storeId = 1L;
+    Long menuId = 1L;
+
+    AuthUser authUser = new AuthUser(userId, email, userRole);
+    User user = new User(email,password,userName,phoneNumber,userAddress,userRole);
+    Store store = new Store(user,storeName,storeNumber,storeAddress,registrationNumber,minOrederPrice,openingTime,closingTime);
+    Menu menu = Menu.menuCreate(menuName, menuPrice, store, user);
+    Order order = new Order(user, store, menu, orderStatus);
+
+    when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+    when(storeRepository.findById(storeId)).thenReturn(Optional.of(store));
+    when(menuRepository.findById(menuId)).thenReturn(Optional.of(menu));
+
+    //when
+    BusinessException businessException = Assertions.assertThrows(BusinessException.class, () -> {
+      orderService.createOrder(authUser, storeId, menuId);
+    });
+
+    //then
+    verify(menuRepository,times(ONE_TIME)).findById(menuId);
+    verify(orderRepository,never()).save(any(Order.class));
+    org.assertj.core.api.Assertions.assertThat(businessException.getMessage()).isEqualTo(ErrorCode.ORDER_MIN_PRICE_BAD_REQUEST.getMessage());
+
+  }
 }

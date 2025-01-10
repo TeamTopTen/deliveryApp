@@ -12,6 +12,7 @@ import org.example.delivery.common.exception.base.BusinessException;
 import org.example.delivery.order.repository.OrderRepository;
 import org.example.delivery.review.model.dto.ReviewPageDto;
 import org.example.delivery.review.model.request.ReviewCreateRequest;
+import org.example.delivery.review.model.request.ReviewUpdateRequest;
 import org.example.delivery.review.repository.ReviewRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,21 +31,20 @@ public class ReviewService {
       AuthUser authUser,
       Long orderId,
       ReviewCreateRequest request) {
-
-    if (reviewRepository.existsByOrderId(orderId)) {
-      throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED);
-    }
-
     Long userId = authUser.id();
 
     Order order = orderRepository.findByIdOrThrow(orderId);
 
     if (!userId.equals(order.getUser().getId())) {
-      throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED);
+      throw new BusinessException(ErrorCode.USER_ACCESS_DENIED);
+    }
+
+    if (reviewRepository.existsByOrderId(orderId)) {
+      throw new BusinessException(ErrorCode.REVIEW_ALREADY_EXISTS);
     }
 
     if (!order.getOrderStatus().toString().equals("COMPLETED")) {
-      throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED);
+      throw new BusinessException(ErrorCode.REVIEW_NOT_ORDER_COMPLETED);
     }
 
     ReviewStar reviewStar = ReviewStar.of(request.getReviewStar());
@@ -68,5 +68,46 @@ public class ReviewService {
         .filter(star -> (star.getValue() >= minStar) && (star.getValue() <= maxStar))
         .toList();
     return reviewRepository.findReviewsByStarRange(storeId, stars, pageable);
+  }
+
+  @Transactional
+  public void updateReview(AuthUser authUser, Long reviewId, ReviewUpdateRequest request) {
+    Long userId = authUser.id();
+
+    Review review = reviewRepository.findReviewByIdOrElseThrow(reviewId);
+
+    Long orderId = review.getOrder().getId();
+
+    Order order = orderRepository.findById(orderId).orElseThrow(
+        () -> new BusinessException(ErrorCode.ORDER_ACCESS_DENIED)
+    );
+
+    if (!order.getUser().getId().equals(userId)) {
+      throw new BusinessException(ErrorCode.USER_ACCESS_DENIED);
+    }
+
+    ReviewStar reviewStar = ReviewStar.of(request.getReviewStar());
+
+    review.changeReview(reviewStar, request.getContent());
+
+  }
+
+  @Transactional
+  public void deleteReview(AuthUser authUser, Long reviewId) {
+    Long userId = authUser.id();
+
+    Review review = reviewRepository.findReviewByIdOrElseThrow(reviewId);
+
+    Long orderId = review.getOrder().getId();
+
+    Order order = orderRepository.findById(orderId).orElseThrow(
+        () -> new BusinessException(ErrorCode.ORDER_NOT_FOUND)
+    );
+
+    if (!order.getUser().getId().equals(userId)) {
+      throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED);
+    }
+
+    reviewRepository.delete(review);
   }
 }

@@ -1,4 +1,4 @@
-package org.example.delivery.store.service;
+package org.example.delivery.unit.store.service;
 
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.*;
@@ -20,6 +20,7 @@ import org.example.delivery.store.model.dto.response.GetStoreByIdResponse;
 import org.example.delivery.store.model.dto.response.StoreResponse;
 import org.example.delivery.store.repository.StoreRepository;
 import org.example.delivery.auth.repository.UserRepository;
+import org.example.delivery.store.service.StoreService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

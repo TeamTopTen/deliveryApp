@@ -10,6 +10,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import org.example.delivery.common.exception.ErrorCode;
+import org.example.delivery.common.exception.base.InvalidRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -42,7 +44,16 @@ public class Menu extends BaseEntity {
     this.user = user;
   }
 
-  public Menu(Long id, String name, Integer price, Store store,User user) {
+  private Menu(Long id, String name, Integer price, Store store,User user,Boolean isDeleted) {
+    this.id = id;
+    this.name = name;
+    this.price = price;
+    this.user = user;
+    this.store = store;
+    this.isDeleted = isDeleted;
+  }
+
+  private Menu(Long id, String name, Integer price, Store store,User user ) {
     this.id = id;
     this.name = name;
     this.price = price;
@@ -53,7 +64,9 @@ public class Menu extends BaseEntity {
   public Menu() {
 
   }
-
+  public static Menu menuCreateWithTestCode(Long id,String name,Integer price,Store store,User user,boolean isDeleted) {
+    return new Menu(id,name,price,store,user,isDeleted);
+  }
   public static Menu menuCreate(String name,Integer price,Store store,User user) {
     return new Menu(name,price,store,user);
   }
@@ -64,13 +77,13 @@ public class Menu extends BaseEntity {
 
   public static void ownerCheck(User user) { // 1
     if(!(user.getUserRole() == OWNER || user.isDeleted())) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"권한이 없습니다.");
+      throw new InvalidRequestException(ErrorCode.Menu_BAD_REQUEST);
     }
   }
 
   public static void storeCheck(User user, Store store) { // 2
     if(!(store.getUser() == user || user.isDeleted())) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"권한이 없습니다.");
+      throw new InvalidRequestException(ErrorCode.Menu_BAD_REQUEST);
     }
   }
 

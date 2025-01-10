@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import java.awt.print.Pageable;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 import org.example.delivery.auth.model.UserRole;
@@ -24,6 +25,7 @@ import org.example.delivery.common.domain.User;
 import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.BusinessException;
 import org.example.delivery.menu.repository.MenuRepository;
+import org.example.delivery.order.model.dto.OrderDto;
 import org.example.delivery.order.model.dto.OrderPageDto;
 import org.example.delivery.order.repository.OrderRepository;
 import org.example.delivery.order.service.OrderService;
@@ -540,6 +542,90 @@ public class OrderServiceTest {
 
     //then
     verify(orderRepository,times(ONE_TIME)).findOrdersByUserId(userId,pageableMock);
+
+  }
+
+  @Test
+  public void USER_주문_단건_조회_성공_테스트() {
+    //given
+    Long userId = 1L;
+    Long orderId = 1L;
+    UserRole userRole = UserRole.USER;
+
+    AuthUser authUserMock = mock(AuthUser.class);
+    //doReturn(userId).when(authUserMock).id();
+    when(authUserMock.id()).thenReturn(userId);
+    when(authUserMock.userRole()).thenReturn(userRole);
+
+    User userMock = mock(User.class);
+    when(userMock.getName()).thenReturn("test");
+
+    Store storeMock = mock(Store.class);
+    when(storeMock.getName()).thenReturn("test");
+
+    Menu menuMock = mock(Menu.class);
+    when(menuMock.getName()).thenReturn("test");
+    when(menuMock.getPrice()).thenReturn(1000);
+
+    Order orderMock = mock(Order.class);
+    when(orderMock.getId()).thenReturn(1L);
+    when(orderMock.getUser()).thenReturn(userMock);
+    when(orderMock.getStore()).thenReturn(storeMock);
+    when(orderMock.getMenu()).thenReturn(menuMock);
+    when(orderMock.getOrderStatus()).thenReturn(OrderStatus.ORDERED);
+    when(orderMock.getCreatedAt()).thenReturn(LocalDate.now().atStartOfDay());
+    when(orderMock.getUpdatedAt()).thenReturn(LocalDate.now().atStartOfDay());
+
+    when(orderRepository.findOrderByUserIdAndOrderIdOrElseThrow(userId,
+        orderId)).thenReturn(orderMock);
+    //when
+    orderService.findOrderbyOrderId(authUserMock,orderId);
+
+    //then
+    verify(orderRepository,times(ONE_TIME)).findOrderByUserIdAndOrderIdOrElseThrow(userId,
+        orderId);
+
+  }
+
+  @Test
+  public void OWNER_주문_단건_조회_성공_테스트() {
+    //given
+    Long userId = 1L;
+    Long orderId = 1L;
+    UserRole userRole = UserRole.OWNER;
+
+    AuthUser authUserMock = mock(AuthUser.class);
+    //doReturn(userId).when(authUserMock).id();
+    when(authUserMock.id()).thenReturn(userId);
+    when(authUserMock.userRole()).thenReturn(userRole);
+
+    User userMock = mock(User.class);
+    when(userMock.getName()).thenReturn("test");
+
+    Store storeMock = mock(Store.class);
+    when(storeMock.getName()).thenReturn("test");
+
+    Menu menuMock = mock(Menu.class);
+    when(menuMock.getName()).thenReturn("test");
+    when(menuMock.getPrice()).thenReturn(1000);
+
+    Order orderMock = mock(Order.class);
+    when(orderMock.getId()).thenReturn(1L);
+    when(orderMock.getUser()).thenReturn(userMock);
+    when(orderMock.getStore()).thenReturn(storeMock);
+    when(orderMock.getMenu()).thenReturn(menuMock);
+    when(orderMock.getOrderStatus()).thenReturn(OrderStatus.CONFIRMED);
+    when(orderMock.getCreatedAt()).thenReturn(LocalDate.now().atStartOfDay());
+    when(orderMock.getUpdatedAt()).thenReturn(LocalDate.now().atStartOfDay());
+
+    when(orderRepository.findOrderByStoreUserIdAndOrderIdOrElseThrow(userId,
+        orderId)).thenReturn(orderMock);
+    //when
+    orderService.findOrderbyOrderId(authUserMock,orderId);
+
+    //then
+    verify(orderRepository,times(ONE_TIME)).findOrderByStoreUserIdAndOrderIdOrElseThrow(userId,
+        orderId);
 
   }
 }

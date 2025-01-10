@@ -1,11 +1,10 @@
 package org.example.delivery.auth.service;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.example.delivery.auth.model.request.DeregisterRequest;
 import org.example.delivery.auth.model.request.LoginRequest;
 import org.example.delivery.auth.model.response.LoginResponse;
-import org.example.delivery.common.config.encode.PasswordEncoder;
+import org.example.delivery.common.config.PasswordEncoder;
 import org.example.delivery.common.config.jwt.JwtUtil;
 import org.example.delivery.common.domain.User;
 import org.example.delivery.common.exception.ErrorCode;
@@ -45,7 +44,7 @@ public class AuthService {
         request.name(),
         request.phoneNumber(),
         request.address(),
-        userRole //사용자 입력에 따라 사용자와 사장 권한이 주어짐
+        userRole
     );
 
     User savedUser = userRepository.save(newUser);
@@ -55,6 +54,7 @@ public class AuthService {
 
   // 로그인
   public LoginResponse authenticate(LoginRequest request) {
+
     User user = userRepository.findUsersByEmail(request.email())
         .orElseThrow(() -> new NotFoundException(ErrorCode.USER_NOT_FOUND));
 

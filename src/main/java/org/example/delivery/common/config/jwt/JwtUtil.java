@@ -46,12 +46,12 @@ public class JwtUtil {
   }
 
   public String substringToken(HttpServletRequest request) {
+
     String bearerToken = request.getHeader("Authorization");
+
     if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-      log.info("=== if 문 시작 ===");
       return bearerToken.substring(7);
     }
-    log.info("=== if 문 바깥 ===" + bearerToken);
     throw new RuntimeException("토큰을 찾을 수 없습니다.");
   }
 

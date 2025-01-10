@@ -2,7 +2,6 @@ package org.example.delivery.unit.menu.service;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -33,13 +32,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.server.ResponseStatusException;
 
 @ExtendWith(MockitoExtension.class)
 public class MenuServiceTest {
 
   private  static final int ONE_TIME =1;
-  private  static final int X_TIME =0;
 
   @InjectMocks
   MenuService menuService;
@@ -58,8 +55,13 @@ public class MenuServiceTest {
 
     String email = "test1@test.com";
     Long storeId = 1L;
-    User user = new User("test1@test.com", "Test1234!@#$", "test", "0101111111", "testaddress",
-        UserRole.OWNER);
+    User user = new User("test1@test.com",
+                  "Test1234!@#$",
+                  "test",
+                  "0101111111",
+                  "testaddress",
+                  UserRole.OWNER);
+
     Store store = new Store(user,"맛나식당","01011111111","한국 어딘가","111-11-11111",
         100, Time.valueOf(LocalTime.now()),Time.valueOf(LocalTime.now()));
 
@@ -67,10 +69,10 @@ public class MenuServiceTest {
     when(menuRepository.save(any(Menu.class))).thenReturn(menu); // 함수가 호출 되었는지 검증
     when(userRepository.findUsersByEmail(email)).thenReturn(Optional.of(user));
     when(storeRepository.findById(storeId)).thenReturn(Optional.of(store));
+
     //when
     menuService.createMenu(request,"test1@test.com",storeId);
 
-    // 내가 생성할 때 만들었던 이메일 값 - 데이터 베이스
     //then
     verify(menuRepository,times(ONE_TIME)).save(any(Menu.class));
   }
@@ -91,20 +93,13 @@ public class MenuServiceTest {
     //when(menuRepository.save(any(Menu.class))).thenReturn(menu); // 함수가 호출 되었는지 검증
     when(userRepository.findUsersByEmail(email)).thenReturn(Optional.of(user));
     when(storeRepository.findById(storeId)).thenReturn(Optional.of(store));
-    //when
-    //menuService.createMenu(request,email,storeId);
 
-    // 내가 생성할 때 만들었던 이메일 값 - 데이터 베이스
-    //then
-//throw - 정확한 에러 , 메세지 검증
+    //when&then
     Assertions.assertThrows(InvalidRequestException.class,() -> {
       menuService.createMenu(request,email,storeId);
     });
     verify(menuRepository, never()).save(any(Menu.class));
-//    Assertions.assertFalse(user.getUserRole().equals(UserRole.OWNER));
-//    verify(userRepository,times(ONE_TIME)).findUsersByEmail(email);
-//    verify(storeRepository,times(ONE_TIME)).findById(storeId);
-//    verify(menuRepository,times(X_TIME)).save(menu);
+
   }
 
   @Test
@@ -131,6 +126,7 @@ public class MenuServiceTest {
         InvalidRequestException.class, () -> {
           menuService.createMenu(request, email, storeId);
         });
+
     Assertions.assertEquals(ErrorCode.Menu_BAD_REQUEST.getMessage(),invalidRequestException.getMessage());
     verify(menuRepository,never()).save(menu);
   }
@@ -153,6 +149,7 @@ public class MenuServiceTest {
 
     //when
     menuService.findMenu(storeId);
+
     //then
     org.assertj.core.api.Assertions.assertThat(menu.getId()).isEqualTo(findMenuList.get(0).getId());
   }
@@ -176,6 +173,7 @@ public class MenuServiceTest {
     NotFoundException notFoundException = Assertions.assertThrows(NotFoundException.class, () -> {
       menuService.findMenu(storeId);
     });
+
     org.assertj.core.api.Assertions.assertThat(menu.getStore().getId()).isNotEqualTo(storeId); // isNotEqualTo 널 값일때 받기 위해
     Assertions.assertEquals(ErrorCode.MENU_NOT_FOUND.getMessage(),notFoundException.getMessage());
     verify(menuRepository,never()).findByStore_IdAndIsDeleted(storeId,false);
@@ -205,17 +203,13 @@ public class MenuServiceTest {
       }
       return null;
     }).when(menuRepository).checkDeleteById(menuId);
-//  2.  doThrow(new NotFoundException(ErrorCode.MENU_NOT_FOUND))
-//        .when(menuRepository).checkDeleteById(menuId);
-    //1. when(menuRepository.checkDeleteById(menuId)).thenThrow(NotFoundException.class);
 
     when(menuRepository.save(any(Menu.class))).thenReturn(testMenu);
     when(userRepository.findUsersByEmail(email)).thenReturn(Optional.of(user));
 
-
-
     //when
     menuService.putMenu(menuId,request,email);
+
     //then
     verify(menuRepository,times(ONE_TIME)).save(any(Menu.class));
     org.assertj.core.api.Assertions.assertThat(menuResponse.getName()).isEqualTo(request.getName());
@@ -241,7 +235,6 @@ public class MenuServiceTest {
     NotFoundException notFoundException = Assertions.assertThrows(NotFoundException.class, () -> {
           menuService.putMenu(testmenuId, request, email);
         });
-
 
     //then
     org.assertj.core.api.Assertions.assertThat(testmenuId).isNotEqualTo(menu.getId());

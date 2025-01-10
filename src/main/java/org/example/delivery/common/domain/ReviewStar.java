@@ -3,7 +3,7 @@ package org.example.delivery.common.domain;
 import java.util.Arrays;
 import lombok.Getter;
 import org.example.delivery.common.exception.ErrorCode;
-import org.example.delivery.common.exception.base.BusinessException;
+import org.example.delivery.common.exception.base.InvalidRequestException;
 
 @Getter
 public enum ReviewStar {
@@ -23,6 +23,6 @@ public enum ReviewStar {
     return Arrays.stream(ReviewStar.values())
         .filter(r -> r.value.equals(value))  // String 비교
         .findFirst()
-        .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_REQUEST));
+        .orElseThrow(() -> new InvalidRequestException(ErrorCode.INVALID_REQUEST));
   }
 }

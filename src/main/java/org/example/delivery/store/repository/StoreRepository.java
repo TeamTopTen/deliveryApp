@@ -10,8 +10,11 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
   long countStoreByUserIdAndIsDeletedFalse(long userId);
 
   boolean existsStoreByName(String name);
+
   boolean existsStoreByStoreAddress(String address);
+
   Optional<Store> findStoreByIdAndIsDeletedFalse(long id);
+
   List<Store> findAllByIsDeletedFalse();
 
 }

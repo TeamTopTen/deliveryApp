@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 public record RegisterRequest(
+
     @NotBlank(message = "이메일은 필수 입력값입니다.")
     @Email
     String email,

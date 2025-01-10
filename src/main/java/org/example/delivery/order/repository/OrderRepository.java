@@ -3,7 +3,7 @@ package org.example.delivery.order.repository;
 import java.util.Optional;
 import org.example.delivery.common.domain.Order;
 import org.example.delivery.common.exception.ErrorCode;
-import org.example.delivery.common.exception.base.BusinessException;
+import org.example.delivery.common.exception.base.NotFoundException;
 import org.example.delivery.order.model.dto.OrderPageDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,10 +44,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
   default Order findOrderByStoreUserIdAndOrderIdOrElseThrow(Long storeUserId, Long orderId) {
     return findOrderByStoreUserIdAndOrderId(storeUserId, orderId)
-        .orElseThrow(() ->
-            new BusinessException(ErrorCode.ORDER_NOT_FOUND));
+        .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
   }
-
 
   @Query("SELECT o " +
       "FROM Order o " +
@@ -58,15 +56,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
   default Order findOrderByUserIdAndOrderIdOrElseThrow(Long userId, Long orderId) {
     return findOrderByUserIdAndOrderId(userId, orderId)
-        .orElseThrow(() ->
-            new BusinessException(ErrorCode.ORDER_NOT_FOUND));
+        .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
   }
 
 
   default Order findByIdOrThrow(Long orderId) {
     return findById(orderId)
-        .orElseThrow(() -> new BusinessException(ErrorCode.ORDER_NOT_FOUND));
+        .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND));
   }
-
-
 }

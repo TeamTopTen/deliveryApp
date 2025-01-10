@@ -8,10 +8,10 @@ import lombok.Getter;
 @Getter
 public class ReviewUpdateRequest {
 
-  @NotNull(message = "reviewStar is required")
+  @NotNull(message = "별점을 입력해주세요.")
   private Integer reviewStar;
 
-  @NotNull(message = "content is required")
+  @NotNull(message = "내용을 입력해주세요.")
   private String content;
 
 }

@@ -1,4 +1,4 @@
-package org.example.delivery.common.config.filter;
+package org.example.delivery.common.config;
 
 import lombok.RequiredArgsConstructor;
 import org.example.delivery.common.config.jwt.JwtFilter;

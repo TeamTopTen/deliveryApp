@@ -8,8 +8,8 @@ import org.example.delivery.auth.repository.UserRepository;
 import org.example.delivery.common.domain.Store;
 import org.example.delivery.common.domain.User;
 import org.example.delivery.common.exception.ErrorCode;
-import org.example.delivery.common.exception.base.BusinessException;
 import org.example.delivery.common.exception.base.ConflictException;
+import org.example.delivery.common.exception.base.InvalidRequestException;
 import org.example.delivery.common.exception.base.NotFoundException;
 import org.example.delivery.menu.model.response.MenuResponse;
 import org.example.delivery.menu.repository.MenuRepository;
@@ -51,7 +51,6 @@ public class StoreService {
     return new StoreResponse("가게가 정상적으로 등록 완료되었습니다.");
   }
 
-
   /**
    * 매장 단건조회 메서드 <br>
    * 1. 가게 고유 아이디 {@code storeId}를 전달받는다. <br>
@@ -59,15 +58,15 @@ public class StoreService {
    * 3. 가게 정보와 메뉴 리스트를 담은 {@code GetStoreByIdResponse}를 반환한다.
    */
   public GetStoreByIdResponse getStoreById(Long storeId) {
-    Store foundStore = storeRepository.findStoreByIdAndIsDeletedFalse(storeId).
-        orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
+    Store foundStore = storeRepository.findStoreByIdAndIsDeletedFalse(storeId)
+            .orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
-    List<MenuResponse> menus = menuRepository.findByStore_IdAndIsDeleted(storeId, false).stream()
+    List<MenuResponse> menus = menuRepository.findByStore_IdAndIsDeleted(storeId, false)
+        .stream()
         .map(MenuResponse::createMenuResponse).toList();
 
     return GetStoreByIdResponse.with(foundStore, menus);
   }
-
 
   /**
    * 매장 전체조회 메서드 <br>
@@ -81,7 +80,6 @@ public class StoreService {
         .map(GetStoresResponse::toDto)
         .toList();
   }
-
 
   /**
    * 가게 수정 메서드 <br>
@@ -103,7 +101,6 @@ public class StoreService {
     return new StoreResponse("수정이 정상적으로 완료되었습니다.");
   }
 
-
   /**
    * 가게 삭제 메서드(soft delete)<br>
    * 1. 가게 ID{@code storeId}를 전달받는다.<br>
@@ -119,7 +116,6 @@ public class StoreService {
     storeRepository.save(foundstore);
   }
 
-
   /**
    * 가게 개수 제한 검증 메서드<br>
    * 1. 유저 고유 아이디{@code userId}를 전달받는다.<br>
@@ -128,10 +124,9 @@ public class StoreService {
    */
   private void validateStoreLimit(Long userId) {
     if (storeRepository.countStoreByUserIdAndIsDeletedFalse(userId) >= 3) {
-      throw new BusinessException(ErrorCode.TOO_MANY_STORES);
+      throw new InvalidRequestException(ErrorCode.TOO_MANY_STORES);
     }
   }
-
 
   /**
    * 요청 유효성 검증 메서드<br>

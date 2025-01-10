@@ -66,8 +66,15 @@ public class Store extends BaseEntity{
   }
 
   public static Store makeWith(User user, StoreRequest request){
-    return new Store(user, request.name(), request.storeNumber(), request.storeAddress(),
-        request.registrationNumber(), request.minOrderPrice(), request.openingTime(), request.closingTime());
+    return new Store(
+        user,
+        request.name(),
+        request.storeNumber(),
+        request.storeAddress(),
+        request.registrationNumber(),
+        request.minOrderPrice(),
+        request.openingTime(),
+        request.closingTime());
   }
 
   public void updateWith(StoreRequest request){

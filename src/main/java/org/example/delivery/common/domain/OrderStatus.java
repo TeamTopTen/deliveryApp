@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.example.delivery.common.exception.ErrorCode;
-import org.example.delivery.common.exception.base.BusinessException;
+import org.example.delivery.common.exception.base.NotFoundException;
 
 public enum OrderStatus {
   ORDERED("user"),          // 손님이 주문 생성
@@ -25,7 +25,7 @@ public enum OrderStatus {
     return Arrays.stream(OrderStatus.values())
         .filter(r -> r.name().equalsIgnoreCase(orderStatus))
         .findFirst()
-        .orElseThrow(() -> new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR));
+        .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_STATUS_NOT_FOUND));
   }
 
   public static List<OrderStatus> getStatusesByActor(String actor) {

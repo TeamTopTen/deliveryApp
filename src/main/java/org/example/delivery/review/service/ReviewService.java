@@ -5,10 +5,13 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.common.domain.Order;
+import org.example.delivery.common.domain.OrderStatus;
 import org.example.delivery.common.domain.Review;
 import org.example.delivery.common.domain.ReviewStar;
 import org.example.delivery.common.exception.ErrorCode;
-import org.example.delivery.common.exception.base.BusinessException;
+import org.example.delivery.common.exception.base.AccessDeniedException;
+import org.example.delivery.common.exception.base.ConflictException;
+import org.example.delivery.common.exception.base.NotFoundException;
 import org.example.delivery.order.repository.OrderRepository;
 import org.example.delivery.review.model.dto.ReviewPageDto;
 import org.example.delivery.review.model.request.ReviewCreateRequest;
@@ -36,19 +39,18 @@ public class ReviewService {
     Order order = orderRepository.findByIdOrThrow(orderId);
 
     if (!userId.equals(order.getUser().getId())) {
-      throw new BusinessException(ErrorCode.USER_ACCESS_DENIED);
+      throw new AccessDeniedException(ErrorCode.USER_ACCESS_DENIED);
     }
 
     if (reviewRepository.existsByOrderId(orderId)) {
-      throw new BusinessException(ErrorCode.REVIEW_ALREADY_EXISTS);
+      throw new ConflictException(ErrorCode.REVIEW_ALREADY_EXISTS);
     }
 
-    if (!order.getOrderStatus().toString().equals("COMPLETED")) {
-      throw new BusinessException(ErrorCode.REVIEW_NOT_ORDER_COMPLETED);
+    if(OrderStatus.COMPLETED != order.getOrderStatus()) {
+      throw new AccessDeniedException(ErrorCode.REVIEW_NOT_ORDER_COMPLETED);
     }
 
     ReviewStar reviewStar = ReviewStar.of(request.getReviewStar());
-
     Review review = new Review(order, reviewStar, request.getContent());
 
     reviewRepository.save(review);
@@ -58,7 +60,6 @@ public class ReviewService {
   public Page<ReviewPageDto> findReviews(AuthUser authUser, Long storeId, Pageable pageable) {
 
     return reviewRepository.findReviewsByStoreId(storeId, pageable);
-
   }
 
   @Transactional(readOnly = true)
@@ -78,18 +79,16 @@ public class ReviewService {
 
     Long orderId = review.getOrder().getId();
 
-    Order order = orderRepository.findById(orderId).orElseThrow(
-        () -> new BusinessException(ErrorCode.ORDER_ACCESS_DENIED)
+    Order order = orderRepository.findById(orderId)
+        .orElseThrow(() -> new AccessDeniedException(ErrorCode.ORDER_ACCESS_DENIED)
     );
 
     if (!order.getUser().getId().equals(userId)) {
-      throw new BusinessException(ErrorCode.USER_ACCESS_DENIED);
+      throw new AccessDeniedException(ErrorCode.USER_ACCESS_DENIED);
     }
-
     ReviewStar reviewStar = ReviewStar.of(request.getReviewStar());
 
     review.changeReview(reviewStar, request.getContent());
-
   }
 
   @Transactional
@@ -100,12 +99,12 @@ public class ReviewService {
 
     Long orderId = review.getOrder().getId();
 
-    Order order = orderRepository.findById(orderId).orElseThrow(
-        () -> new BusinessException(ErrorCode.ORDER_NOT_FOUND)
+    Order order = orderRepository.findById(orderId)
+        .orElseThrow(() -> new NotFoundException(ErrorCode.ORDER_NOT_FOUND)
     );
 
     if (!order.getUser().getId().equals(userId)) {
-      throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED);
+      throw new AccessDeniedException(ErrorCode.ORDER_ACCESS_DENIED);
     }
 
     reviewRepository.delete(review);

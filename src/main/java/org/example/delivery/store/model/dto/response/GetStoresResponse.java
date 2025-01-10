@@ -11,8 +11,15 @@ public record GetStoresResponse(
     Time closingTime
 ) {
 
+  /**
+   * {@code store}객체 받아서 {@code GetStoresResponse}객체 만들어주는 정적 팩토리 메서드
+   */
   public static GetStoresResponse toDto(Store store) {
-    return new GetStoresResponse(store.getName(), store.getStoreAddress(),
-        store.getOpeningTime(), store.getClosingTime());
+    return new GetStoresResponse(
+        store.getName(),
+        store.getStoreAddress(),
+        store.getOpeningTime(),
+        store.getClosingTime()
+    );
   }
 }

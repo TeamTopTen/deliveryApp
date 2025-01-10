@@ -17,13 +17,13 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
   @Override
   public boolean supportsParameter(MethodParameter parameter) {
+
     boolean hasAuthAnnotation = parameter.getParameterAnnotation(Auth.class) != null;
     boolean isAuthUserType = parameter.getParameterType().equals(AuthUser.class);
 
     if (hasAuthAnnotation != isAuthUserType) {
       throw new AuthException(ErrorCode.AUTHENTICATION_FAILED); //TODO JWT Exception - Authentication 예외 만들기
     }
-
     return hasAuthAnnotation;
   }
 
@@ -42,5 +42,4 @@ public class AuthUserArgumentResolver implements HandlerMethodArgumentResolver {
 
     return new AuthUser(userId, email, userRole);
   }
-
 }

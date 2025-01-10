@@ -31,7 +31,8 @@ public class MenuController {
   @PostMapping("/owners")
   public ResponseEntity<String> createMenu(@Valid @RequestBody MenuRequest request,
       @PathVariable("store_id") Long storeId,
-      @Auth AuthUser authUser) {
+      @Auth AuthUser authUser
+  ) {
 
     menuService.createMenu(request, authUser.email(),storeId);
     return ResponseEntity.ok().body("메뉴가 정상적으로 생성되었습니다.");
@@ -39,7 +40,6 @@ public class MenuController {
 
   @GetMapping("/users")
   public ResponseEntity<List<MenuResponse>> findMenu(@PathVariable("store_id") Long storeId) {
-
     return ResponseEntity.ok().body(menuService.findMenu(storeId));
   }
 

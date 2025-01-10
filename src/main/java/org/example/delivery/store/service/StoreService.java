@@ -59,7 +59,7 @@ public class StoreService {
    * 3. 가게 정보와 메뉴 리스트를 담은 {@code GetStoreByIdResponse}를 반환한다.
    */
   public GetStoreByIdResponse getStoreById(Long storeId) {
-    Store foundStore = storeRepository.findById(storeId).
+    Store foundStore = storeRepository.findStoreByIdAndIsDeletedFalse(storeId).
         orElseThrow(() -> new NotFoundException(ErrorCode.STORE_NOT_FOUND));
 
     List<MenuResponse> menus = menuRepository.findByStore_IdAndIsDeleted(storeId, false).stream()

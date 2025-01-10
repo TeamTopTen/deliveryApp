@@ -165,4 +165,19 @@ class StoreServiceTest {
             tuple("Menu3", 13000)
         );
   }
+
+  @Test
+  void 삭제된_가게_검색_시도() {
+    // given
+    Store mockStore = new Store(null, "Test Store", "010-0000-0000",
+        "서울시 강북구 번동", "123-12-12345", 15000,
+        Time.valueOf("09:00:00"), Time.valueOf("20:00:00"));
+    mockStore.softDelete();
+
+    // when & then
+    assertThatThrownBy(() -> storeService.getStoreById(1L))
+        .isInstanceOf(NotFoundException.class)
+        .extracting("errorCode")
+        .isEqualTo(ErrorCode.STORE_NOT_FOUND);
+  }
 }

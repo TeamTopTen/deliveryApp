@@ -41,12 +41,13 @@ public enum ErrorCode {
   //Order
   ORDER_ACCESS_DENIED(HttpStatus.FORBIDDEN, "O403", "주문은 유저만 등록/삭제 할 수 있습니다."),
   ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "O404", "존재하지 않는 주문입니다."),
-  ORDER_MIN_PRICE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "B400", "가게에서 설정한 최소 주문 금액을 만족해야 주문이 가능합니다."),
-  ORDER_TIME_BAD_REQUEST(HttpStatus.BAD_REQUEST, "B400", "가게의 오픈/마감 시간이 지나면 주문할 수 없습니다."),
+  ORDER_MIN_PRICE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "O400", "가게에서 설정한 최소 주문 금액을 만족해야 주문이 가능합니다."),
+  ORDER_TIME_BAD_REQUEST(HttpStatus.BAD_REQUEST, "O400", "가게의 오픈/마감 시간이 지나면 주문할 수 없습니다."),
 
   //Review
-
-
+  REVIEW_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, "R400", "리뷰가 이미 존재합니다."),
+  REVIEW_NOT_ORDER_COMPLETED(HttpStatus.FORBIDDEN, "R403", "배달 완료 되지 않은 주문은 리뷰를 작성할 수 없습니다."),
+  REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "RO404", "리뷰를 찾을 수 없습니다."),
 
   //Store
   STORE_NOT_FOUND(HttpStatus.NOT_FOUND, "NF01", "존재하지 않는 매장입니다"),

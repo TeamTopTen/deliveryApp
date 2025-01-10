@@ -1,6 +1,5 @@
 package org.example.delivery.review.service;
 
-import jakarta.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -92,5 +91,24 @@ public class ReviewService {
 
     review.changeReview(reviewStar, request.getContent());
 
+  }
+
+  @Transactional
+  public void deleteReview(AuthUser authUser, Long reviewId) {
+    Long userId = authUser.id();
+
+    Review review = reviewRepository.findReviewByIdOrElseThrow(reviewId);
+
+    Long orderId = review.getOrder().getId();
+
+    Order order = orderRepository.findById(orderId).orElseThrow(
+        () -> new BusinessException(ErrorCode.ORDER_ACCESS_DENIED)
+    );
+
+    if (!order.getUser().getId().equals(userId)) {
+      throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED);
+    }
+
+    reviewRepository.delete(review);
   }
 }

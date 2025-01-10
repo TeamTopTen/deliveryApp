@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,7 +30,6 @@ public class ReviewController {
 
   private final ReviewService reviewService;
 
-  // 리뷰 생성 Post /api/orders/{order_id}/reviews
   @PostMapping("/orders/{orderId}/reviews")
   public ResponseEntity<String> createReview(
       @Auth AuthUser authUser,
@@ -39,10 +39,9 @@ public class ReviewController {
 
     reviewService.createReview(authUser, orderId, request);
 
-    return new ResponseEntity<>("등록되었습니다. ", HttpStatus.CREATED);
+    return new ResponseEntity<>("리뷰가 등록되었습니다. ", HttpStatus.CREATED);
   }
 
-  // 리뷰 전체 최신순 조회 GET /api/stores/{store_id}/reviews
   @GetMapping("/stores/{storeId}/reviews")
   public ResponseEntity<Page<ReviewPageDto>> getReviews(
       @Auth AuthUser authUser,
@@ -56,7 +55,6 @@ public class ReviewController {
         HttpStatus.OK);
   }
 
-  // 리뷰 별점 범위 조회 GET /api/stores/{store_id}/reviews?minStar={minStar}&maxStar={maxStar}
   @GetMapping("/stores/{storeId}/reviews-star")
   public ResponseEntity<Page<ReviewPageDto>> getReviewsByStarRange(
       @PathVariable("storeId") Long storeId,
@@ -69,7 +67,6 @@ public class ReviewController {
         pageable), HttpStatus.OK);
   }
 
-  //리뷰 수정 /api/orders/{order_id}/reviews/{review_id}
   @PatchMapping("/reviews/{reviewId}")
   public ResponseEntity<String> updateReview(
       @Auth AuthUser authUser,
@@ -80,5 +77,13 @@ public class ReviewController {
     return new ResponseEntity<>("리뷰수정이 완료되었습니다.", HttpStatus.OK);
   }
 
-  // 리뷰 삭제 /api/orders/{order_id}/reviews/{review_id}
+  @DeleteMapping("/reviews/{reviewId}")
+  public ResponseEntity<String> deleteReview(
+      @Auth AuthUser authUser,
+      @PathVariable("reviewId") Long reviewId
+  ) {
+    reviewService.deleteReview(authUser, reviewId);
+    return new ResponseEntity<>("리뷰삭제가 완료되었습니다.", HttpStatus.OK);
+  }
+
 }

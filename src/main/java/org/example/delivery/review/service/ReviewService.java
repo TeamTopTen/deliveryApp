@@ -1,5 +1,7 @@
 package org.example.delivery.review.service;
 
+import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.example.delivery.auth.model.dto.AuthUser;
 import org.example.delivery.common.domain.Order;
@@ -8,9 +10,13 @@ import org.example.delivery.common.domain.ReviewStar;
 import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.BusinessException;
 import org.example.delivery.order.repository.OrderRepository;
+import org.example.delivery.review.model.dto.ReviewPageDto;
 import org.example.delivery.review.model.request.ReviewCreateRequest;
 import org.example.delivery.review.repository.ReviewRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +25,7 @@ public class ReviewService {
   private final OrderRepository orderRepository;
   private final ReviewRepository reviewRepository;
 
+  @Transactional
   public void createReview(
       AuthUser authUser,
       Long orderId,
@@ -36,7 +43,7 @@ public class ReviewService {
       throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED);
     }
 
-    if (!order.getOrderStatus().toString().equals("COMPLETED")){
+    if (!order.getOrderStatus().toString().equals("COMPLETED")) {
       throw new BusinessException(ErrorCode.ORDER_ACCESS_DENIED);
     }
 
@@ -45,5 +52,21 @@ public class ReviewService {
     Review review = new Review(order, reviewStar, request.getContent());
 
     reviewRepository.save(review);
+  }
+
+  @Transactional(readOnly = true)
+  public Page<ReviewPageDto> findReviews(AuthUser authUser, Long storeId, Pageable pageable) {
+
+    return reviewRepository.findReviewsByStoreId(storeId, pageable);
+
+  }
+
+  @Transactional(readOnly = true)
+  public Page<ReviewPageDto> getReviewsByStarRange(Long storeId, Integer minStar, Integer maxStar,
+      Pageable pageable) {
+    List<ReviewStar> stars = Arrays.stream(ReviewStar.values())
+        .filter(star -> (star.getValue() >= minStar) && (star.getValue() <= maxStar))
+        .toList();
+    return reviewRepository.findReviewsByStarRange(storeId, stars, pageable);
   }
 }

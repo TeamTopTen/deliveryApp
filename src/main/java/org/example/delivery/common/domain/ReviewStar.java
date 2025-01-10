@@ -4,7 +4,6 @@ import java.util.Arrays;
 import lombok.Getter;
 import org.example.delivery.common.exception.ErrorCode;
 import org.example.delivery.common.exception.base.BusinessException;
-import org.example.delivery.common.exception.base.InvalidRequestException;
 
 @Getter
 public enum ReviewStar {
@@ -14,15 +13,15 @@ public enum ReviewStar {
   FOUR(4),
   FIVE(5);
 
-  private final int reviewStar;
+  private final Integer value;  // Integer로 변경
 
-  ReviewStar(int reviewStar) {
-    this.reviewStar = reviewStar;
+  ReviewStar(int value) {
+    this.value = value;
   }
 
-  public static ReviewStar of(int reviewStar) {
+  public static ReviewStar of(int value) {
     return Arrays.stream(ReviewStar.values())
-        .filter(r -> r.reviewStar == reviewStar)
+        .filter(r -> r.value.equals(value))  // String 비교
         .findFirst()
         .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_REQUEST));
   }

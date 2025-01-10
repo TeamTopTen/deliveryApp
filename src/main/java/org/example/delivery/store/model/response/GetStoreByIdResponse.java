@@ -1,4 +1,4 @@
-package org.example.delivery.store.model.dto.response;
+package org.example.delivery.store.model.response;
 
 import java.sql.Time;
 import java.util.List;

@@ -13,10 +13,10 @@ import org.example.delivery.common.exception.base.InvalidRequestException;
 import org.example.delivery.common.exception.base.NotFoundException;
 import org.example.delivery.menu.model.response.MenuResponse;
 import org.example.delivery.menu.repository.MenuRepository;
-import org.example.delivery.store.model.dto.request.StoreRequest;
-import org.example.delivery.store.model.dto.response.GetStoresResponse;
-import org.example.delivery.store.model.dto.response.GetStoreByIdResponse;
-import org.example.delivery.store.model.dto.response.StoreResponse;
+import org.example.delivery.store.model.request.StoreRequest;
+import org.example.delivery.store.model.response.GetStoresResponse;
+import org.example.delivery.store.model.response.GetStoreByIdResponse;
+import org.example.delivery.store.model.response.StoreResponse;
 import org.example.delivery.store.repository.StoreRepository;
 import org.springframework.stereotype.Service;
 

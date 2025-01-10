@@ -1,4 +1,4 @@
-package org.example.delivery.auth.Annotation;
+package org.example.delivery.auth.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

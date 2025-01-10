@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.example.delivery.auth.Annotation.Auth;
+import org.example.delivery.auth.annotation.Auth;
 
 @RestController
 @RequestMapping("api/stores/{store_id}/menus")

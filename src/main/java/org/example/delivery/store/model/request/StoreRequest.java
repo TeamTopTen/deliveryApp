@@ -1,4 +1,4 @@
-package org.example.delivery.store.model.dto.request;
+package org.example.delivery.store.model.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;

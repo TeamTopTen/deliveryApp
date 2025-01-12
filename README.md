@@ -36,12 +36,12 @@
 - 주문 CRUD
 - 리뷰 CRUD
 
+## ERD  
+![image](https://github.com/user-attachments/assets/04dd5207-66ee-4c11-9fd3-b392b0632348)
+
 ## API 명세서
 ![image](https://github.com/user-attachments/assets/26d780ec-2217-42c0-83e4-2b94d2a423d3)
 
-
-## ERD  
-![image](https://github.com/user-attachments/assets/04dd5207-66ee-4c11-9fd3-b392b0632348)
    
 ## Members
 
